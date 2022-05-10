@@ -25,7 +25,7 @@ type DouyinFeedRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	LatestTime *int64 `protobuf:"varint,1,opt,name=latest_time,json=latestTime" json:"latest_time,omitempty"` // 可选参数，限制返回视频的最新投稿时间戳，精确到秒，不填表示当前时间​
+	LatestTime int64 `protobuf:"varint,1,opt,name=latest_time,json=latestTime,proto3" json:"latest_time,omitempty"` // 可选参数，限制返回视频的最新投稿时间戳，精确到秒，不填表示当前时间​
 }
 
 func (x *DouyinFeedRequest) Reset() {
@@ -61,8 +61,8 @@ func (*DouyinFeedRequest) Descriptor() ([]byte, []int) {
 }
 
 func (x *DouyinFeedRequest) GetLatestTime() int64 {
-	if x != nil && x.LatestTime != nil {
-		return *x.LatestTime
+	if x != nil {
+		return x.LatestTime
 	}
 	return 0
 }
@@ -72,10 +72,10 @@ type DouyinFeedResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	StatusCode *int32   `protobuf:"varint,1,req,name=status_code,json=statusCode" json:"status_code,omitempty"` // 状态码，0-成功，其他值-失败​
-	StatusMsg  *string  `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg" json:"status_msg,omitempty"`     // 返回状态描述​
-	VideoList  []*Video `protobuf:"bytes,3,rep,name=video_list,json=videoList" json:"video_list,omitempty"`     // 视频列表​
-	NextTime   *int64   `protobuf:"varint,4,opt,name=next_time,json=nextTime" json:"next_time,omitempty"`       // 本次返回的视频中，发布最早的时间，作为下次请求时的latest_time
+	StatusCode int32    `protobuf:"varint,1,opt,name=status_code,json=statusCode,proto3" json:"status_code,omitempty"` // 状态码，0-成功，其他值-失败​
+	StatusMsg  string   `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg,omitempty"`     // 返回状态描述​
+	VideoList  []*Video `protobuf:"bytes,3,rep,name=video_list,json=videoList,proto3" json:"video_list,omitempty"`     // 视频列表​
+	NextTime   int64    `protobuf:"varint,4,opt,name=next_time,json=nextTime,proto3" json:"next_time,omitempty"`       // 本次返回的视频中，发布最早的时间，作为下次请求时的latest_time
 }
 
 func (x *DouyinFeedResponse) Reset() {
@@ -111,15 +111,15 @@ func (*DouyinFeedResponse) Descriptor() ([]byte, []int) {
 }
 
 func (x *DouyinFeedResponse) GetStatusCode() int32 {
-	if x != nil && x.StatusCode != nil {
-		return *x.StatusCode
+	if x != nil {
+		return x.StatusCode
 	}
 	return 0
 }
 
 func (x *DouyinFeedResponse) GetStatusMsg() string {
-	if x != nil && x.StatusMsg != nil {
-		return *x.StatusMsg
+	if x != nil {
+		return x.StatusMsg
 	}
 	return ""
 }
@@ -132,8 +132,8 @@ func (x *DouyinFeedResponse) GetVideoList() []*Video {
 }
 
 func (x *DouyinFeedResponse) GetNextTime() int64 {
-	if x != nil && x.NextTime != nil {
-		return *x.NextTime
+	if x != nil {
+		return x.NextTime
 	}
 	return 0
 }
@@ -149,7 +149,7 @@ var file_feed_proto_rawDesc = []byte{
 	0x03, 0x52, 0x0a, 0x6c, 0x61, 0x74, 0x65, 0x73, 0x74, 0x54, 0x69, 0x6d, 0x65, 0x22, 0xa6, 0x01,
 	0x0a, 0x14, 0x64, 0x6f, 0x75, 0x79, 0x69, 0x6e, 0x5f, 0x66, 0x65, 0x65, 0x64, 0x5f, 0x72, 0x65,
 	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x1f, 0x0a, 0x0b, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73,
-	0x5f, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x02, 0x28, 0x05, 0x52, 0x0a, 0x73, 0x74, 0x61,
+	0x5f, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x0a, 0x73, 0x74, 0x61,
 	0x74, 0x75, 0x73, 0x43, 0x6f, 0x64, 0x65, 0x12, 0x1d, 0x0a, 0x0a, 0x73, 0x74, 0x61, 0x74, 0x75,
 	0x73, 0x5f, 0x6d, 0x73, 0x67, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x73, 0x74, 0x61,
 	0x74, 0x75, 0x73, 0x4d, 0x73, 0x67, 0x12, 0x31, 0x0a, 0x0a, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x5f,
@@ -158,7 +158,7 @@ var file_feed_proto_rawDesc = []byte{
 	0x76, 0x69, 0x64, 0x65, 0x6f, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x1b, 0x0a, 0x09, 0x6e, 0x65, 0x78,
 	0x74, 0x5f, 0x74, 0x69, 0x6d, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x03, 0x52, 0x08, 0x6e, 0x65,
 	0x78, 0x74, 0x54, 0x69, 0x6d, 0x65, 0x42, 0x10, 0x5a, 0x0e, 0x2e, 0x2e, 0x2f, 0x70, 0x6b, 0x67,
-	0x3b, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65,
+	0x3b, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
