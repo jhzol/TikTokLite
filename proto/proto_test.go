@@ -2,25 +2,26 @@ package ProtoMessage
 
 import (
 	"TikTokLite/proto/pkg"
-	"google.golang.org/protobuf/proto"
+	"encoding/json"
+	"fmt"
 	"testing"
 )
 
 func TestProto(t *testing.T) {
 	user := &message.User{
-		Id:       new(int64),
-		Name:     new(string),
-		IsFollow: new(bool),
+		Id:            123,
+		Name:          "someName",
+		FollowCount:   12,
+		FollowerCount: 123,
+		IsFollow:      false,
 	}
-	*user.Id = 123
-	*user.Name = "someName"
-	*user.IsFollow = false
-	data, err := proto.Marshal(user)
+	data, err := json.Marshal(user)
 	if err != nil {
 		t.Errorf("Marshal error\n")
 	}
 	newUser := &message.User{}
-	err = proto.Unmarshal(data, newUser)
+	err = json.Unmarshal(data, newUser)
+	fmt.Printf("%+v", newUser)
 	if err != nil {
 		t.Errorf("Unmarshal error\n")
 	}
