@@ -9,7 +9,7 @@ package message
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	reflect "reflect"
+
 	sync "sync"
 )
 
@@ -68,9 +68,9 @@ func (x *DouyinFeedRequest) GetLatestTime() int64 {
 }
 
 type DouyinFeedResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
+	// state         protoimpl.MessageState
+	// sizeCache     protoimpl.SizeCache
+	// unknownFields protoimpl.UnknownFields
 
 	StatusCode int32    `protobuf:"varint,1,opt,name=status_code,json=statusCode,proto3" json:"status_code,omitempty"` // 状态码，0-成功，其他值-失败​
 	StatusMsg  string   `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg,omitempty"`     // 返回状态描述​
@@ -188,54 +188,54 @@ var file_feed_proto_depIdxs = []int32{
 	0, // [0:1] is the sub-list for field type_name
 }
 
-func init() { file_feed_proto_init() }
-func file_feed_proto_init() {
-	if File_feed_proto != nil {
-		return
-	}
-	file_user_proto_init()
-	if !protoimpl.UnsafeEnabled {
-		file_feed_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DouyinFeedRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_feed_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DouyinFeedResponse); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-	}
-	type x struct{}
-	out := protoimpl.TypeBuilder{
-		File: protoimpl.DescBuilder{
-			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: file_feed_proto_rawDesc,
-			NumEnums:      0,
-			NumMessages:   2,
-			NumExtensions: 0,
-			NumServices:   0,
-		},
-		GoTypes:           file_feed_proto_goTypes,
-		DependencyIndexes: file_feed_proto_depIdxs,
-		MessageInfos:      file_feed_proto_msgTypes,
-	}.Build()
-	File_feed_proto = out.File
-	file_feed_proto_rawDesc = nil
-	file_feed_proto_goTypes = nil
-	file_feed_proto_depIdxs = nil
-}
+// func init() { file_feed_proto_init() }
+// func file_feed_proto_init() {
+// 	if File_feed_proto != nil {
+// 		return
+// 	}
+// 	file_user_proto_init()
+// 	if !protoimpl.UnsafeEnabled {
+// 		file_feed_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
+// 			switch v := v.(*DouyinFeedRequest); i {
+// 			case 0:
+// 				return &v.state
+// 			case 1:
+// 				return &v.sizeCache
+// 			case 2:
+// 				return &v.unknownFields
+// 			default:
+// 				return nil
+// 			}
+// 		}
+// 		file_feed_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
+// 			switch v := v.(*DouyinFeedResponse); i {
+// 			case 0:
+// 				return &v.state
+// 			case 1:
+// 				return &v.sizeCache
+// 			case 2:
+// 				return &v.unknownFields
+// 			default:
+// 				return nil
+// 			}
+// 		}
+// 	}
+// 	type x struct{}
+// 	out := protoimpl.TypeBuilder{
+// 		File: protoimpl.DescBuilder{
+// 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
+// 			RawDescriptor: file_feed_proto_rawDesc,
+// 			NumEnums:      0,
+// 			NumMessages:   2,
+// 			NumExtensions: 0,
+// 			NumServices:   0,
+// 		},
+// 		GoTypes:           file_feed_proto_goTypes,
+// 		DependencyIndexes: file_feed_proto_depIdxs,
+// 		MessageInfos:      file_feed_proto_msgTypes,
+// 	}.Build()
+// 	File_feed_proto = out.File
+// 	file_feed_proto_rawDesc = nil
+// 	file_feed_proto_goTypes = nil
+// 	file_feed_proto_depIdxs = nil
+// }

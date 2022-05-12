@@ -1,9 +1,9 @@
 package ProtoMessage
 
 import (
+	"TikTokLite/log"
 	"TikTokLite/proto/pkg"
 	"encoding/json"
-	"fmt"
 	"testing"
 )
 
@@ -21,7 +21,7 @@ func TestProto(t *testing.T) {
 	}
 	newUser := &message.User{}
 	err = json.Unmarshal(data, newUser)
-	fmt.Printf("%+v", newUser)
+	log.Infof("%+v", newUser)
 	if err != nil {
 		t.Errorf("Unmarshal error\n")
 	}
