@@ -1,8 +1,8 @@
 package controller
 
 import (
-	"TikTokLite/log"
 	"TikTokLite/proto/pkg"
+	"TikTokLite/response"
 	// "encoding/json"
 	"github.com/gin-gonic/gin"
 	"time"
@@ -10,10 +10,9 @@ import (
 
 //点赞视频
 func Feed(ctx *gin.Context) {
-	feedResponse := message.DouyinFeedResponse{
-		StatusCode: 0,
-		StatusMsg:  "success",
-		NextTime:   time.Now().UnixNano(),
+	//some test
+	feedResponse := &message.DouyinFeedResponse{
+		NextTime: time.Now().UnixNano(),
 	}
 	author := message.User{
 		Id:       1,
@@ -23,7 +22,7 @@ func Feed(ctx *gin.Context) {
 	video := message.Video{
 		Id:            1,
 		Author:        &author,
-		PlayUrl:       "http://112.74.109.70:36647/api/v1/buckets/video/objects/download?preview=true&prefix=MDQubXA0&version_id=null",
+		PlayUrl:       "http://112.74.109.70:9000/video/01.mp4",
 		CoverUrl:      "https://github.com/jhzol/test/blob/master/image/image-20220507170717302.png?raw=true",
 		FavoriteCount: 0,
 		CommentCount:  0,
@@ -31,6 +30,5 @@ func Feed(ctx *gin.Context) {
 	}
 	feedResponse.VideoList = append(feedResponse.VideoList, &video)
 	// data, _ := json.Marshal(feedResponse)
-	log.Infof("message : [%+v]", feedResponse)
-	ctx.JSON(200, feedResponse)
+	response.Fail(ctx, "feed error", feedResponse)
 }

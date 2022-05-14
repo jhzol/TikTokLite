@@ -1,12 +1,11 @@
 package log
 
 import (
+	"TikTokLite/util"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"os"
-	"strconv"
-	"time"
 )
 
 var log = InitLog()
@@ -29,7 +28,7 @@ func InitLog() *zap.Logger {
 	lowPriority := zap.LevelEnablerFunc(func(lev zapcore.Level) bool { //info和debug级别,debug级别是最低的
 		return lev < zap.ErrorLevel && lev >= zap.DebugLevel
 	})
-	now := strconv.FormatInt(time.Now().UnixNano(), 10)
+	now := util.GetCurrentTimeForString()
 	//info文件writeSyncer
 	infoFileWriteSyncer := zapcore.AddSync(&lumberjack.Logger{
 		Filename:   "./logfile/info" + now + ".log", //日志文件存放目录，如果文件夹不存在会自动创建
@@ -51,7 +50,7 @@ func InitLog() *zap.Logger {
 
 	coreArr = append(coreArr, infoFileCore)
 	coreArr = append(coreArr, errorFileCore)
-	return zap.New(zapcore.NewTee(coreArr...), zap.AddCaller()) //zap.AddCaller()为显示文件名和行号，可省略
+	return zap.New(zapcore.NewTee(coreArr...), zap.AddCaller(), zap.AddCallerSkip(1)) //zap.AddCaller()为显示文件名和行号，可省略
 }
 
 func Infof(s string, v ...interface{}) {
