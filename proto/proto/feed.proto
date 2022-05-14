@@ -14,6 +14,7 @@ import "user.proto";
 message douyin_feed_request {
     int64 latest_time = 1; // 可选参数，限制返回视频的最新投稿时间戳，精确到秒，不填表示当前时间​
 }
+
 message douyin_feed_response {
     int32 status_code = 1; // 状态码，0-成功，其他值-失败​
     string status_msg = 2; // 返回状态描述​
