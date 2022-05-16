@@ -15,7 +15,7 @@ func PublishVideo(token, saveFile string) (*message.DouyinPublishActionResponse,
 	if err != nil {
 		return nil, err
 	}
-	err = repository.InsertVideo(userId, videourl, "localhost:9000/pic/test.jpg")
+	err = repository.InsertVideo(userId, videourl, "http://192.168.1.12:9000/pic/test.jpg")
 	if err != nil {
 		return nil, err
 	}
