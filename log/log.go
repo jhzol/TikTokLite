@@ -2,16 +2,18 @@ package log
 
 import (
 	"TikTokLite/util"
+	"fmt"
+	"github.com/spf13/viper"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"os"
 )
 
-var log = InitLog()
-var sugar = log.Sugar()
+var log *zap.Logger
+var sugar *zap.SugaredLogger
 
-func InitLog() *zap.Logger {
+func InitLog() {
 	var coreArr []zapcore.Core
 
 	//获取编码器
@@ -29,28 +31,31 @@ func InitLog() *zap.Logger {
 		return lev < zap.ErrorLevel && lev >= zap.DebugLevel
 	})
 	now := util.GetCurrentTimeForString()
+	path := viper.GetString("logfile")
 	//info文件writeSyncer
 	infoFileWriteSyncer := zapcore.AddSync(&lumberjack.Logger{
-		Filename:   "./logfile/info" + now + ".log", //日志文件存放目录，如果文件夹不存在会自动创建
-		MaxSize:    1,                               //文件大小限制,单位MB
-		MaxBackups: 5,                               //最大保留日志文件数量
-		MaxAge:     30,                              //日志文件保留天数
-		Compress:   false,                           //是否压缩处理
+		Filename:   path + "info" + now + ".log", //日志文件存放目录，
+		MaxSize:    1,                            //文件大小限制,单位MB
+		MaxBackups: 5,                            //最大保留日志文件数量
+		MaxAge:     30,                           //日志文件保留天数
+		Compress:   false,                        //是否压缩处理
 	})
+	fmt.Println(path + "info" + now + ".log")
 	infoFileCore := zapcore.NewCore(encoder, zapcore.NewMultiWriteSyncer(infoFileWriteSyncer, zapcore.AddSync(os.Stdout)), lowPriority)
 	//error文件writeSyncer
 	errorFileWriteSyncer := zapcore.AddSync(&lumberjack.Logger{
-		Filename:   "./logfile/error" + now + ".log", //日志文件存放目录
-		MaxSize:    1,                                //文件大小限制,单位MB
-		MaxBackups: 5,                                //最大保留日志文件数量
-		MaxAge:     30,                               //日志文件保留天数
-		Compress:   false,                            //是否压缩处理
+		Filename:   path + "error" + now + ".log", //日志文件存放目录
+		MaxSize:    1,                             //文件大小限制,单位MB
+		MaxBackups: 5,                             //最大保留日志文件数量
+		MaxAge:     30,                            //日志文件保留天数
+		Compress:   false,                         //是否压缩处理
 	})
 	errorFileCore := zapcore.NewCore(encoder, zapcore.NewMultiWriteSyncer(errorFileWriteSyncer, zapcore.AddSync(os.Stdout)), highPriority)
 
 	coreArr = append(coreArr, infoFileCore)
 	coreArr = append(coreArr, errorFileCore)
-	return zap.New(zapcore.NewTee(coreArr...), zap.AddCaller(), zap.AddCallerSkip(1)) //zap.AddCaller()为显示文件名和行号，可省略
+	log = zap.New(zapcore.NewTee(coreArr...), zap.AddCaller(), zap.AddCallerSkip(1)) //zap.AddCaller()为显示文件名和行号，可省略
+	sugar = log.Sugar()
 }
 
 func Infof(s string, v ...interface{}) {

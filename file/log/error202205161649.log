@@ -1,0 +1,1 @@
+2022-05-16T16:49:05.862+0800	[31mERROR[0m	minioStore/minioClient.go:67	upload file error:Get http://localhost/video/?location=: dial tcp 127.0.0.1:80: connect: connection refused

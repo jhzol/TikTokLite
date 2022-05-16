@@ -1,0 +1,4 @@
+2022-05-16T14:02:45.917+0800	[34mINFO[0m	repository/dbInit.go:26	user:123@tcp(112.74.109.70:3306)/TikTokLite?charset=utf8&parseTime=true
+2022-05-16T14:02:46.153+0800	[34mINFO[0m	repository/dbInit.go:31	connect database success,user:user,database:TikTokLite
+2022-05-16T14:02:50.742+0800	[35mDEBUG[0m	controller/userController.go:13	debug print
+2022-05-16T14:02:50.789+0800	[34mINFO[0m	service/userService.go:41	login user:&{Id:6 Name:tes Password:1234563 Follow:0 Follower:0 Token:202205141422}

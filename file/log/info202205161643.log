@@ -1,0 +1,10 @@
+2022-05-16T16:43:21.605+0800	[34mINFO[0m	repository/dbInit.go:26	user:123@tcp(112.74.109.70:3306)/TikTokLite?charset=utf8&parseTime=true
+2022-05-16T16:43:21.843+0800	[34mINFO[0m	repository/dbInit.go:31	connect database success,user:user,database:TikTokLite
+2022-05-16T16:43:25.092+0800	[35mDEBUG[0m	controller/userController.go:13	debug print
+2022-05-16T16:43:25.187+0800	[34mINFO[0m	service/userService.go:45	login user:&{Id:12 Name:testyser Password:111111 Follow:0 Follower:0 Token:testyser202205161336}
+2022-05-16T16:43:26.771+0800	[35mDEBUG[0m	controller/publishController.go:34	file/video/VeFzyPcVlykXCenV_运行 2021-09-04 22-28-36.mp4
+2022-05-16T16:43:54.151+0800	[34mINFO[0m	repository/dbInit.go:26	user:123@tcp(112.74.109.70:3306)/TikTokLite?charset=utf8&parseTime=true
+2022-05-16T16:43:54.377+0800	[34mINFO[0m	repository/dbInit.go:31	connect database success,user:user,database:TikTokLite
+2022-05-16T16:43:59.830+0800	[35mDEBUG[0m	controller/userController.go:13	debug print
+2022-05-16T16:43:59.920+0800	[34mINFO[0m	service/userService.go:45	login user:&{Id:12 Name:testyser Password:111111 Follow:0 Follower:0 Token:testyser202205161336}
+2022-05-16T16:44:05.922+0800	[35mDEBUG[0m	controller/publishController.go:34	file/video/yuWGIVljNsvnkWnq_运行 2021-09-04 22-28-36.mp4

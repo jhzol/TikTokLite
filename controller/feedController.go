@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-//点赞视频
+//视频流
 func Feed(ctx *gin.Context) {
 	//some test
 	feedResponse := &message.DouyinFeedResponse{

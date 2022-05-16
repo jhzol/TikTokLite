@@ -8,7 +8,7 @@ import (
 func PublishRoutes(r *gin.RouterGroup) {
 	publish := r.Group("publish")
 	{
-		publish.POST("/action", controller.PublishAction)
-		publish.GET("/list", controller.GetPublishList)
+		publish.POST("/action/", controller.PublishAction)
+		publish.GET("/list/", controller.GetPublishList)
 	}
 }

@@ -1,0 +1,8 @@
+2022-05-16T17:00:56.021+0800	[34mINFO[0m	repository/dbInit.go:26	user:123@tcp(112.74.109.70:3306)/TikTokLite?charset=utf8&parseTime=true
+2022-05-16T17:00:56.255+0800	[34mINFO[0m	repository/dbInit.go:31	connect database success,user:user,database:TikTokLite
+2022-05-16T17:01:24.658+0800	[35mDEBUG[0m	controller/userController.go:13	debug print
+2022-05-16T17:01:24.750+0800	[34mINFO[0m	service/userService.go:45	login user:&{Id:12 Name:testyser Password:111111 Follow:0 Follower:0 Token:testyser202205161336}
+2022-05-16T17:01:30.356+0800	[35mDEBUG[0m	controller/publishController.go:34	file/video/uEyjxnIbPPvMLett_运行 2021-09-04 22-28-36.mp4
+2022-05-16T17:01:30.359+0800	[35mDEBUG[0m	minioStore/minioClient.go:41	bucketnamevideo
+2022-05-16T17:01:30.361+0800	[35mDEBUG[0m	minioStore/minioClient.go:41	bucketname
+2022-05-16T17:01:30.383+0800	[34mINFO[0m	minioStore/minioClient.go:72	upload file %dbyte success,fileName:%s1887667 {0xc0002e33f8 [49 50 95 50 48 50 50 48 53 49 54 49 55 48 49 46 109 112 52]}

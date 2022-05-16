@@ -8,8 +8,8 @@ import (
 func CommentRoutes(r *gin.RouterGroup) {
 	comment := r.Group("comment")
 	{
-		comment.POST("/action", controller.CommentAction)
-		comment.GET("/list", controller.GetCommentList)
+		comment.POST("/action/", controller.CommentAction)
+		comment.GET("/list/", controller.GetCommentList)
 	}
 
 }

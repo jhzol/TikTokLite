@@ -4,3 +4,15 @@ mysql:
   database: TikTokLite
   username: user
   password: 123
+minio:
+  host: 172.21.220.146
+  port: 9000
+  accessKeyID: minioadmin
+  secretAccessKey: minioadmin
+  videobuckets: video
+  picbuckets: pic
+  iswsl: true
+  winhost: 192.168.1.12
+videofile: ./file/video/
+logfile: ./file/log/
+picfile: ./file/picture/

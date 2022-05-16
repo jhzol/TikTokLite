@@ -1,0 +1,2 @@
+2022-05-16T16:47:42.272+0800	[31mERROR[0m	minioStore/minioClient.go:42	check video bucketExists err:Get http://localhost/video/?location=: dial tcp 127.0.0.1:80: connect: connection refused
+2022-05-16T16:48:35.820+0800	[31mERROR[0m	minioStore/minioClient.go:42	check video bucketExists err:Get http://localhost/video/?location=: dial tcp 127.0.0.1:80: connect: connection refused

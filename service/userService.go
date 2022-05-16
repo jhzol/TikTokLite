@@ -1,21 +1,80 @@
 package service
 
 import (
+	"TikTokLite/log"
 	"TikTokLite/proto/pkg"
 	"TikTokLite/repository"
+	"errors"
+	"strconv"
+	"sync"
 )
 
-func UserRegister(userName, passWord string) (*message.DouyinUserRegisterResponse, error) {
+var (
+	currentUser sync.Map
+)
+
+func UserRegister(userName, password string) (*message.DouyinUserRegisterResponse, error) {
 	registResponse := &message.DouyinUserRegisterResponse{}
 	err := repository.UserNameIsExist(userName)
 	if err != nil {
 		return registResponse, err
 	}
-	user, err := repository.InsertUser(userName, passWord)
+	info, err := repository.InsertUser(userName, password)
 	if err != nil {
 		return registResponse, err
 	}
-	registResponse.UserId = user.Id
-	registResponse.Token = user.Token
+	user := &message.User{
+		Id:            info.Id,
+		Name:          info.Name,
+		FollowCount:   info.Follow,
+		FollowerCount: info.Follower,
+		IsFollow:      false,
+	}
+	registResponse.UserId = info.Id
+	registResponse.Token = info.Token
+	currentUser.Store(info.Token, user)
 	return registResponse, nil
+}
+
+func UserLogin(userName, password string) (*message.DouyinUserLoginResponse, error) {
+	info, err := repository.GetUserInfo(userName)
+	if err != nil {
+		return nil, err
+	}
+	if password != info.Password {
+		return nil, errors.New("password error")
+	}
+	loginResponse := &message.DouyinUserLoginResponse{
+		UserId: info.Id,
+		Token:  info.Token,
+	}
+	user := &message.User{
+		Id:            info.Id,
+		Name:          info.Name,
+		FollowCount:   info.Follow,
+		FollowerCount: info.Follower,
+		IsFollow:      false,
+	}
+	currentUser.Store(info.Token, user)
+	log.Infof("login user:%+v", user)
+	return loginResponse, nil
+}
+
+func UserInfo(userID, token string) (*message.DouyinUserResponse, error) {
+	info, err := CheckCurrentUser(token)
+	if err != nil {
+		return nil, err
+	}
+	if strconv.FormatInt(info.Id, 10) != userID {
+		return nil, errors.New("token error")
+	}
+	return &message.DouyinUserResponse{User: info}, nil
+}
+
+func CheckCurrentUser(token string) (*message.User, error) {
+	user, ok := currentUser.Load(token)
+	if !ok {
+		return nil, errors.New("please login your account or user doesn't exist")
+	}
+	return user.(*message.User), nil
 }
