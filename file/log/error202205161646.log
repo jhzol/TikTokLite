@@ -1,3 +1,0 @@
-2022-05-16T16:46:45.724+0800	[31mERROR[0m	minioStore/minioClient.go:43	check  bucketExists err:Bucket name cannot be empty
-2022-05-16T16:46:45.724+0800	[31mERROR[0m	minioStore/minioClient.go:43	check  bucketExists err:Bucket name cannot be empty
-2022-05-16T16:46:45.725+0800	[31mERROR[0m	minioStore/minioClient.go:68	upload file error:Get http://localhost/video/?location=: dial tcp 127.0.0.1:80: connect: connection refused

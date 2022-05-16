@@ -24,7 +24,7 @@ func GetCurrentTimeForString() string {
 }
 
 func GetCurrentTime() int64 {
-	return time.Now().UnixNano()
+	return time.Now().UnixNano() / 1e6
 }
 
 //随机生成字符

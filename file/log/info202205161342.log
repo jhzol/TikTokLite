@@ -1,3 +1,0 @@
-2022-05-16T13:42:04.284+0800	[34mINFO[0m	repository/dbInit.go:26	user:123@tcp(112.74.109.70:3306)/TikTokLite?charset=utf8&parseTime=true
-2022-05-16T13:42:04.519+0800	[34mINFO[0m	repository/dbInit.go:31	connect database success,user:user,database:TikTokLite
-2022-05-16T13:42:57.194+0800	[34mINFO[0m	controller/userController.go:54	get userinfo  error : please login your account or user doesn't exist

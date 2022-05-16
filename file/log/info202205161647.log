@@ -1,6 +1,0 @@
-2022-05-16T16:47:32.222+0800	[34mINFO[0m	repository/dbInit.go:26	user:123@tcp(112.74.109.70:3306)/TikTokLite?charset=utf8&parseTime=true
-2022-05-16T16:47:32.462+0800	[34mINFO[0m	repository/dbInit.go:31	connect database success,user:user,database:TikTokLite
-2022-05-16T16:47:36.843+0800	[35mDEBUG[0m	controller/userController.go:13	debug print
-2022-05-16T16:47:36.940+0800	[34mINFO[0m	service/userService.go:45	login user:&{Id:12 Name:testyser Password:111111 Follow:0 Follower:0 Token:testyser202205161336}
-2022-05-16T16:47:42.269+0800	[35mDEBUG[0m	controller/publishController.go:34	file/video/iQVEnPEseyKjrwkU_运行 2021-09-04 22-28-36.mp4
-2022-05-16T16:48:35.817+0800	[35mDEBUG[0m	controller/publishController.go:34	file/video/TqdCLEYWwzzpCgTU_运行 2021-09-04 22-28-36.mp4

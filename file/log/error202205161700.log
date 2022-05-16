@@ -1,1 +1,0 @@
-2022-05-16T17:01:30.362+0800	[31mERROR[0m	minioStore/minioClient.go:44	check  bucketExists err:Bucket name cannot be empty

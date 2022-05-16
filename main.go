@@ -6,6 +6,7 @@ import (
 	"TikTokLite/routes"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
+	"os"
 )
 
 func main() {
@@ -27,4 +28,8 @@ func Init() {
 	}
 	log.InitLog()
 	repository.InitDatabase()
+	videoPath := viper.GetString("videofile")
+	picPath := viper.GetString("picfile")
+	os.Mkdir(videoPath, os.ModePerm)
+	os.Mkdir(picPath, os.ModePerm)
 }

@@ -46,3 +46,13 @@ func GetVideoList(AuthorId int64) ([]Video, error) {
 	}
 	return videos, nil
 }
+
+func GetVideoListByFeed(currentTime int64) ([]Video, error) {
+	var videos []Video
+	db := GetDB()
+	err := db.Where("publish_time < ?", currentTime).Limit(30).Find(&videos).Error
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return videos, err
+	}
+	return videos, nil
+}

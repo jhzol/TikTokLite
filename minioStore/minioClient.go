@@ -41,7 +41,7 @@ func NewMinioClient() Minio {
 }
 
 func creatBucket(m *minio.Client, bucket string) {
-	log.Debug("bucketname", bucket)
+	// log.Debug("bucketname", bucket)
 	found, err := m.BucketExists(bucket)
 	if err != nil {
 		log.Errorf("check %s bucketExists err:%s", bucket, err.Error())
@@ -49,17 +49,34 @@ func creatBucket(m *minio.Client, bucket string) {
 	if !found {
 		m.MakeBucket(bucket, "us-east-1")
 	}
+	//设置桶策略
+	policy := `{"Version": "2012-10-17",
+				"Statement": 
+					[{
+						"Action":["s3:GetObject"],
+						"Effect": "Allow",
+						"Principal": {"AWS": ["*"]},
+						"Resource": ["arn:aws:s3:::` + bucket + `/*"],
+						"Sid": ""
+					}]
+				}`
+	err = m.SetBucketPolicy(bucket, policy)
+	if err != nil {
+		log.Errorf("SetBucketPolicy %s  err:%s", bucket, err.Error())
+	}
 }
 
-func (m *Minio) UploadFile(bucket, file, userID string) (string, error) {
+func (m *Minio) UploadFile(filetype, file, userID string) (string, error) {
 	var fileName strings.Builder
-	var contentType, Suffix string
-	if bucket == "video" {
+	var contentType, Suffix, bucket string
+	if filetype == "video" {
 		contentType = "video/mp4"
 		Suffix = ".mp4"
+		bucket = m.VideoBuckets
 	} else {
 		contentType = "image/jpeg"
 		Suffix = ".jpg"
+		bucket = m.PicBuckets
 	}
 	fileName.WriteString(userID)
 	fileName.WriteString("_")
