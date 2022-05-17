@@ -23,13 +23,7 @@ func UserRegister(userName, password string) (*message.DouyinUserRegisterRespons
 	if err != nil {
 		return registResponse, err
 	}
-	user := &message.User{
-		Id:            info.Id,
-		Name:          info.Name,
-		FollowCount:   info.Follow,
-		FollowerCount: info.Follower,
-		IsFollow:      false,
-	}
+	user := messageUserInfo(info)
 	registResponse.UserId = info.Id
 	registResponse.Token = info.Token
 	currentUser.Store(info.Token, user)
@@ -48,18 +42,13 @@ func UserLogin(userName, password string) (*message.DouyinUserLoginResponse, err
 		UserId: info.Id,
 		Token:  info.Token,
 	}
-	user := &message.User{
-		Id:            info.Id,
-		Name:          info.Name,
-		FollowCount:   info.Follow,
-		FollowerCount: info.Follower,
-		IsFollow:      false,
-	}
+	user := messageUserInfo(info)
 	currentUser.Store(info.Token, user)
 	log.Infof("login user:%+v", user)
 	return loginResponse, nil
 }
 
+//获取登录用户的信息
 func UserInfo(userID, token string) (*message.DouyinUserResponse, error) {
 	info, err := CheckCurrentUser(token)
 	if err != nil {
@@ -77,4 +66,14 @@ func CheckCurrentUser(token string) (*message.User, error) {
 		return nil, errors.New("please login your account or user doesn't exist")
 	}
 	return user.(*message.User), nil
+}
+
+func messageUserInfo(info *repository.User) *message.User {
+	return &message.User{
+		Id:            info.Id,
+		Name:          info.Name,
+		FollowCount:   info.Follow,
+		FollowerCount: info.Follower,
+		IsFollow:      false,
+	}
 }

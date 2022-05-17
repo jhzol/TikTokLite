@@ -13,7 +13,7 @@ type Video struct {
 	FavoriteCount int64  `gorm:"column:favorite_count;"`
 	CommentCount  int64  `gorm:"column:comment_count;"`
 	PublishTime   int64  `gorm:"column:publish_time;"`
-	Author        *User
+	// Author        *User
 }
 
 func (Video) TableName() string {
@@ -50,7 +50,7 @@ func GetVideoList(AuthorId int64) ([]Video, error) {
 func GetVideoListByFeed(currentTime int64) ([]Video, error) {
 	var videos []Video
 	db := GetDB()
-	err := db.Where("publish_time < ?", currentTime).Limit(30).Find(&videos).Error
+	err := db.Where("publish_time < ?", currentTime).Limit(30).Order("publish_time DESC").Find(&videos).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return videos, err
 	}

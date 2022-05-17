@@ -33,6 +33,7 @@ func UserNameIsExist(userName string) error {
 	return nil
 }
 
+//创建用户
 func InsertUser(userName, password string) (*User, error) {
 	db := GetDB()
 	var builder strings.Builder
@@ -54,12 +55,21 @@ func InsertUser(userName, password string) (*User, error) {
 	return &user, nil
 }
 
-func GetUserInfo(userName string) (*User, error) {
+//获取用户信息
+func GetUserInfo(u interface{}) (*User, error) {
 	db := GetDB()
 	user := User{}
-	result := db.Where("user_name = ?", userName).Find(&user)
-	if result.Error != nil {
-		return nil, errors.New("username error")
+	var err error
+	switch u.(type) {
+	case int64:
+		err = db.Where("user_id = ?", u).Find(&user).Error
+	case string:
+		err = db.Where("user_name = ?", u).Find(&user).Error
+	default:
+		err = errors.New("")
+	}
+	if err != nil {
+		return nil, errors.New("user error")
 	}
 	return &user, nil
 }

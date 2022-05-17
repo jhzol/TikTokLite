@@ -13,18 +13,23 @@ func GetFeedList(currentTime int64) (*message.DouyinFeedResponse, error) {
 	feed := &message.DouyinFeedResponse{
 		VideoList: make([]*message.Video, len(videoList)),
 	}
-	user, _ := CheckCurrentUser("testyser202205161336")
 	for i, video := range videoList {
-		video := &message.Video{
+		v := &message.Video{
 			Id:            video.Id,
-			Author:        user,
 			PlayUrl:       video.PlayUrl,
 			CoverUrl:      video.CoverUrl,
 			FavoriteCount: video.FavoriteCount,
 			CommentCount:  video.CommentCount,
 			IsFavorite:    false,
 		}
-		feed.VideoList[i] = video
+		author, err := repository.GetUserInfo(video.AuthorId)
+		if err != nil {
+			return nil, err
+		}
+		v.Author = messageUserInfo(author)
+		feed.VideoList[i] = v
 	}
+	nextTime := videoList[len(videoList)-1].PublishTime
+	feed.NextTime = nextTime
 	return feed, nil
 }
