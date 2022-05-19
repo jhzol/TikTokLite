@@ -22,13 +22,17 @@ func PublishVideo(token, saveFile string) (*message.DouyinPublishActionResponse,
 	return &message.DouyinPublishActionResponse{}, nil
 }
 
-func PublishList(token string) (*message.DouyinPublishListResponse, error) {
-	user, err := CheckCurrentUser(token)
+func PublishList(token string, userId int64) (*message.DouyinPublishListResponse, error) {
+	// _, err := CheckCurrentUser(token)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	u, err := repository.GetUserInfo(userId)
 	if err != nil {
 		return nil, err
 	}
-	userId := user.Id
-	videos, err := repository.GetVideoList(userId)
+	user := messageUserInfo(u)
+	videos, err := repository.GetVideoList(user.Id)
 	if err != nil {
 		return nil, err
 	}

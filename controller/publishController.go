@@ -9,13 +9,14 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 	"path/filepath"
+	"strconv"
 )
 
 //视频发布
 func PublishAction(ctx *gin.Context) {
 	// publishResponse := &message.DouyinPublishActionResponse{}
 	token := ctx.PostForm("token")
-
+	log.Infof("token:%s", token)
 	data, err := ctx.FormFile("data")
 	if err != nil {
 		response.Fail(ctx, err.Error(), nil)
@@ -48,7 +49,12 @@ func PublishAction(ctx *gin.Context) {
 //获取视频列表
 func GetPublishList(ctx *gin.Context) {
 	token := ctx.Query("token")
-	list, err := service.PublishList(token)
+	id := ctx.Query("user_id")
+	userId, err := strconv.ParseInt(id, 10, 64)
+	if err != nil {
+		response.Fail(ctx, err.Error(), nil)
+	}
+	list, err := service.PublishList(token, userId)
 	if err != nil {
 		response.Fail(ctx, err.Error(), nil)
 		return

@@ -29,7 +29,10 @@ func GetFeedList(currentTime int64) (*message.DouyinFeedResponse, error) {
 		v.Author = messageUserInfo(author)
 		feed.VideoList[i] = v
 	}
-	nextTime := videoList[len(videoList)-1].PublishTime
+	nextTime := currentTime
+	if len(videoList) != 0 {
+		nextTime = videoList[len(videoList)-1].PublishTime
+	}
 	feed.NextTime = nextTime
 	return feed, nil
 }

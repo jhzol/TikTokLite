@@ -5,6 +5,7 @@ import (
 	"TikTokLite/util"
 	"github.com/minio/minio-go/v6"
 	"github.com/spf13/viper"
+	"strconv"
 	"strings"
 )
 
@@ -80,7 +81,7 @@ func (m *Minio) UploadFile(filetype, file, userID string) (string, error) {
 	}
 	fileName.WriteString(userID)
 	fileName.WriteString("_")
-	fileName.WriteString(util.GetCurrentTimeForString())
+	fileName.WriteString(strconv.FormatInt(util.GetCurrentTime(), 10))
 	fileName.WriteString(Suffix)
 	n, err := m.MinioClient.FPutObject(bucket, fileName.String(), file, minio.PutObjectOptions{
 		ContentType: contentType,
