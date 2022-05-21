@@ -14,18 +14,19 @@ var (
 )
 
 func UserRegister(userName, password string) (*message.DouyinUserRegisterResponse, error) {
-	registResponse := &message.DouyinUserRegisterResponse{}
 	err := repository.UserNameIsExist(userName)
 	if err != nil {
-		return registResponse, err
+		return nil, err
 	}
 	info, err := repository.InsertUser(userName, password)
 	if err != nil {
-		return registResponse, err
+		return nil, err
 	}
 	user := messageUserInfo(info)
-	registResponse.UserId = info.Id
-	registResponse.Token = info.Token
+	registResponse := &message.DouyinUserRegisterResponse{
+		UserId: info.Id,
+		Token:  info.Token,
+	}
 	currentUser.Store(info.Token, user)
 	return registResponse, nil
 }

@@ -75,7 +75,7 @@
 
   ![](https://github.com/jhzol/test/blob/master/image/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202022-05-17%20154717.png?raw=true)
 
-​	在浏览器中输入主机ip:9000即可打开minio提供的前端管理界面
+​	在浏览器中输入主机ip:9000即可打开minio提供的前端管理界面，对外访问地址为`服务ip:端口/bucket名称/文件名称`(需将bucket的access policy设置为public）
 
 - **使用手机访问本机服务**（模拟器应该可以不用配置）
 

@@ -27,8 +27,10 @@ func UserNameIsExist(userName string) error {
 	db := GetDB()
 	user := User{}
 	err := db.Where("user_name = ?", userName).Find(&user).Error
-	if err != gorm.ErrRecordNotFound {
+	if err == nil {
 		return errors.New("username exist")
+	} else if err != gorm.ErrRecordNotFound {
+		return err
 	}
 	return nil
 }
