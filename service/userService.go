@@ -71,10 +71,13 @@ func CheckCurrentUser(token string) (*message.User, error) {
 
 func messageUserInfo(info *repository.User) *message.User {
 	return &message.User{
-		Id:            info.Id,
-		Name:          info.Name,
-		FollowCount:   info.Follow,
-		FollowerCount: info.Follower,
-		IsFollow:      false,
+		Id:              info.Id,
+		Name:            info.Name,
+		FollowCount:     info.Follow,
+		FollowerCount:   info.Follower,
+		IsFollow:        false,
+		Avatar:          info.Avatar,
+		BackgroundImage: info.BackgroundImage,
+		Signature:       info.Signature,
 	}
 }

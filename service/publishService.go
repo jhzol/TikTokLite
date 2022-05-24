@@ -15,7 +15,7 @@ func PublishVideo(token, saveFile string) (*message.DouyinPublishActionResponse,
 	if err != nil {
 		return nil, err
 	}
-	err = repository.InsertVideo(userId, videourl, "http://192.168.1.12:9000/pic/test.jpg")
+	err = repository.InsertVideo(userId, videourl, "https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/7909abe413ec4a1e82032d2beb810157~tplv-k3u1fbpfcp-zoom-in-crop-mark:1304:0:0:0.awebp?")
 	if err != nil {
 		return nil, err
 	}
@@ -23,10 +23,6 @@ func PublishVideo(token, saveFile string) (*message.DouyinPublishActionResponse,
 }
 
 func PublishList(token string, userId int64) (*message.DouyinPublishListResponse, error) {
-	// _, err := CheckCurrentUser(token)
-	// if err != nil {
-	// 	return nil, err
-	// }
 	u, err := repository.GetUserInfo(userId)
 	if err != nil {
 		return nil, err
@@ -39,6 +35,12 @@ func PublishList(token string, userId int64) (*message.DouyinPublishListResponse
 	list := &message.DouyinPublishListResponse{
 		VideoList: make([]*message.Video, len(videos)),
 	}
+	followlist, _ := tokenFollowList(token)
+	follow := false
+	if _, ok := followlist[user.Id]; ok {
+		follow = true
+	}
+	user.IsFollow = follow
 	for i, video := range videos {
 		v := &message.Video{
 			Id:            video.Id,

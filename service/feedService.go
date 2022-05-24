@@ -5,7 +5,15 @@ import (
 	"TikTokLite/repository"
 )
 
-func GetFeedList(currentTime int64) (*message.DouyinFeedResponse, error) {
+func GetFeedList(currentTime int64, token string) (*message.DouyinFeedResponse, error) {
+	var err error
+	FollowList := make(map[int64]struct{})
+	if token != "" {
+		FollowList, err = tokenFollowList(token)
+		if err != nil {
+			return nil, err
+		}
+	}
 	videoList, err := repository.GetVideoListByFeed(currentTime)
 	if err != nil {
 		return nil, err
@@ -27,6 +35,9 @@ func GetFeedList(currentTime int64) (*message.DouyinFeedResponse, error) {
 			return nil, err
 		}
 		v.Author = messageUserInfo(author)
+		if _, ok := FollowList[author.Id]; ok {
+			v.Author.IsFollow = true
+		}
 		feed.VideoList[i] = v
 	}
 	nextTime := currentTime

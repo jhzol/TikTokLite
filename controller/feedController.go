@@ -15,7 +15,8 @@ func Feed(ctx *gin.Context) {
 	if err != nil {
 		currentTime = util.GetCurrentTime()
 	}
-	feedList, err := service.GetFeedList(currentTime)
+	token := ctx.Query("token")
+	feedList, err := service.GetFeedList(currentTime, token)
 	if err != nil {
 		response.Fail(ctx, err.Error(), nil)
 	}
