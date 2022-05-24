@@ -11,7 +11,7 @@
  Target Server Version : 80029
  File Encoding         : 65001
 
- Date: 17/05/2022 15:33:29
+ Date: 24/05/2022 11:01:17
 */
 
 SET NAMES utf8mb4;
@@ -62,7 +62,7 @@ CREATE TABLE `relations`  (
   INDEX `FollowerId`(`follower_id`) USING BTREE,
   CONSTRAINT `followerid` FOREIGN KEY (`follower_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE RESTRICT,
   CONSTRAINT `followid` FOREIGN KEY (`follow_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for users
@@ -75,8 +75,11 @@ CREATE TABLE `users`  (
   `follow_count` bigint NULL DEFAULT NULL,
   `follower_count` bigint NULL DEFAULT NULL,
   `token` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `avatar` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `background_image` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `signature` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   PRIMARY KEY (`user_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for videos
@@ -93,6 +96,42 @@ CREATE TABLE `videos`  (
   PRIMARY KEY (`video_id`) USING BTREE,
   INDEX `user`(`author_id`) USING BTREE,
   CONSTRAINT `authorid` FOREIGN KEY (`author_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 28 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Triggers structure for table relations
+-- ----------------------------
+DROP TRIGGER IF EXISTS `follow_action`;
+delimiter ;;
+CREATE TRIGGER `follow_action` AFTER INSERT ON `relations` FOR EACH ROW update users set follow_count = follow_count + 1 where users.user_id = new.follow_id
+;;
+delimiter ;
+
+-- ----------------------------
+-- Triggers structure for table relations
+-- ----------------------------
+DROP TRIGGER IF EXISTS `follower_action`;
+delimiter ;;
+CREATE TRIGGER `follower_action` AFTER INSERT ON `relations` FOR EACH ROW update users set follower_count = follower_count + 1 where users.user_id = new.follower_id
+;;
+delimiter ;
+
+-- ----------------------------
+-- Triggers structure for table relations
+-- ----------------------------
+DROP TRIGGER IF EXISTS `false_follow_action`;
+delimiter ;;
+CREATE TRIGGER `false_follow_action` AFTER DELETE ON `relations` FOR EACH ROW update users set follow_count = follow_count - 1 where users.user_id = old.follow_id
+;;
+delimiter ;
+
+-- ----------------------------
+-- Triggers structure for table relations
+-- ----------------------------
+DROP TRIGGER IF EXISTS `false_follower_action`;
+delimiter ;;
+CREATE TRIGGER `false_follower_action` AFTER DELETE ON `relations` FOR EACH ROW update users set follower_count = follower_count - 1 where users.user_id = old.follower_id
+;;
+delimiter ;
 
 SET FOREIGN_KEY_CHECKS = 1;
