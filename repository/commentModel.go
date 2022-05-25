@@ -1,0 +1,68 @@
+package repository
+
+import (
+	"TikTokLite/log"
+	"errors"
+	"time"
+
+	"github.com/jinzhu/gorm"
+)
+
+type Comment struct {
+	// gorm.Model
+	CommentId int64  `gorm:"column:comment_id; primary_key;"`
+	UserId    int64  `gorm:"column:user_id"`
+	VideoId   int64  `gorm:"column:video_id"`
+	Comment   string `gorm:"column:comment"`
+	Time      string `gorm:"column:time"`
+}
+
+func CommentAdd(userId, videoId int64, comment_text string) (*Comment, error) {
+	db := GetDB()
+	nowtime := time.Now().Format("2006-01-02 15:04:05")
+	comment := Comment{
+		UserId:  userId,
+		VideoId: videoId,
+		Comment: comment_text,
+		Time:    nowtime,
+	}
+	result := db.Create(&comment)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	log.Infof("comment:%+v", comment)
+	return &comment, nil
+}
+
+func CommentDelete(comment_id int64) error {
+	db := GetDB()
+	commentTemp := Comment{}
+	err := db.Where("comment_id = ?", comment_id).Take(&commentTemp).Error
+	if err != nil {
+		return err
+	}
+	db.Delete(&commentTemp)
+	return nil
+
+}
+
+func CommentList(videoId int64) ([]Comment, error) {
+	var comments []Comment
+	db := GetDB()
+	err := db.Where("video_id = ?", videoId).Find(&comments).Error
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return comments, err
+	}
+	return comments, nil
+
+}
+
+func GetVideoInfo(v interface{}) (*Video, error) {
+	db := GetDB()
+	video := Video{}
+	err := db.Where("video_id = ?", v).Find(&video).Error
+	if err != nil {
+		return nil, errors.New("video error")
+	}
+	return &video, err
+}
