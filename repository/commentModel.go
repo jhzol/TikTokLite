@@ -66,3 +66,15 @@ func GetVideoInfo(v interface{}) (*Video, error) {
 	}
 	return &video, err
 }
+
+//根据user_id找到所有的用户信息
+func GetUser(v interface{}) (*User, error) {
+	db := GetDB()
+	var user User
+	err := db.Where("user_id = ?", v).Find(&user).Error
+	if err != nil {
+		return nil, errors.New("user error")
+	}
+	return &user, nil
+
+}

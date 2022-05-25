@@ -4,8 +4,11 @@ import (
 	"TikTokLite/log"
 	"TikTokLite/util"
 	"errors"
-	"github.com/jinzhu/gorm"
+	"fmt"
 	"strings"
+
+	"github.com/jinzhu/gorm"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type User struct {
@@ -43,11 +46,21 @@ func InsertUser(userName, password string) (*User, error) {
 	db := GetDB()
 	var builder strings.Builder
 	builder.WriteString(userName)
+	builder.WriteString("*")
 	builder.WriteString(util.GetCurrentTimeForString())
 	token := builder.String()
+	fmt.Println("---------------------密码加密-----------------------------------------------------")
+	hasedPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	/* if err != nil {
+		fmt.Println("用户加密错误")
+
+		return
+	} */
+
+	fmt.Println("----------------------------------------------------------------------------------")
 	user := User{
 		Name:            userName,
-		Password:        password,
+		Password:        string(hasedPassword),
 		Follow:          0,
 		Follower:        0,
 		Token:           token,

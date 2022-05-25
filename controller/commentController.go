@@ -4,6 +4,7 @@ import (
 	"TikTokLite/log"
 	"TikTokLite/response"
 	"TikTokLite/service"
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -22,14 +23,22 @@ func CommentAction(ctx *gin.Context) {
 	video_id := ctx.Query("video_id")
 	action_type := ctx.Query("action_type")
 	comment_text := ctx.Query("comment_text")
-	comment_id := ctx.Query("comment_id")
-	actionType, _ := strconv.Atoi(action_type)
-	commentId, _ := strconv.Atoi(comment_id)
-	userIdTemp := strconv.FormatInt(user.Id, 10)
-	userId, _ := strconv.Atoi(userIdTemp)
-	//userId, _ := strconv.Atoi(user_id)
-	videoId, _ := strconv.Atoi(video_id)
 
+	comment_id := ctx.Query("comment_id")
+
+	//actionType, _ := strconv.Atoi(action_type)
+	//commentId, _ := strconv.Atoi(comment_id)
+	userIdTemp := strconv.FormatInt(user.Id, 10)
+	//userId, _ := strconv.Atoi(userIdTemp)
+	//userId, _ := strconv.Atoi(user_id)
+	//videoId, _ := strconv.Atoi(video_id)
+	fmt.Println("-------------将字符串转换成64位int-------------------------------------------")
+	commentId, _ := strconv.ParseInt(comment_id, 10, 64)
+	userId, _ := strconv.ParseInt(userIdTemp, 10, 64)
+	videoId, _ := strconv.ParseInt(video_id, 10, 64)
+	actionType, _ := strconv.ParseInt(action_type, 10, 64)
+
+	fmt.Println("----------------------------------------------------------------")
 	commentResponse, err := service.CommentAction(actionType, commentId, userId, videoId, comment_text)
 	if err != nil {
 		log.Infof("comment error : %s", err)

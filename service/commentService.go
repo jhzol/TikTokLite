@@ -3,6 +3,7 @@ package service
 import (
 	message "TikTokLite/proto/pkg"
 	"TikTokLite/repository"
+
 	"fmt"
 )
 
@@ -16,55 +17,55 @@ type User struct {
 	Token    string `gorm:"column:token"`
 }
 
-// func CommentAction(actionType, commentId, userId, videoId int, comment_text string) (*message.DouyinCommentActionResponse, error) {
-// 	commentResponse := &message.DouyinCommentActionResponse{}
-// 	if actionType == 1 {
-// 		//commentInfo, err := repository.CommentAdd(userId, videoId, comment_text)
-// 		_, err := repository.CommentAdd(userId, videoId, comment_text)
+func CommentAction(actionType, commentId, userId int64, videoId int64, comment_text string) (*message.DouyinCommentActionResponse, error) {
+	commentResponse := &message.DouyinCommentActionResponse{}
+	if actionType == 1 {
+		//commentInfo, err := repository.CommentAdd(userId, videoId, comment_text)
+		_, err := repository.CommentAdd(userId, videoId, comment_text)
 
-// 		if err != nil {
-// 			//return commentResponse, err
+		if err != nil {
+			//return commentResponse, err
 
-// 			return nil, err
-// 		}
-// 		//commentResponse.StatusCode = 0 //评论成功
-// 		//commentResponse.StatusMsg = "comment success!"
-// 		//fmt.Printf("commentResponse:%v", commentResponse)  comment:{CommentId:6 UserId:29 VideoId:6 Comment:哈哈哈哈
-// 		//	Time:2022-05-24 17:36:52}
-// 		return commentResponse, nil
-// 	} else if actionType == 2 {
-// 		err := repository.CommentDelete(commentId)
-// 		if err != nil {
-// 			return commentResponse, err
-// 		}
-// 		//commentResponse.StatusCode = 0
-// 		//commentResponse.StatusMsg = "comments deleted successfully!"
-// 		return commentResponse, nil
-// 	}
+			return nil, err
+		}
+		//commentResponse.StatusCode = 0 //评论成功
+		//commentResponse.StatusMsg = "comment success!"
+		//fmt.Printf("commentResponse:%v", commentResponse)  comment:{CommentId:6 UserId:29 VideoId:6 Comment:哈哈哈哈
+		//	Time:2022-05-24 17:36:52}
+		return commentResponse, nil
+	} else if actionType == 2 {
+		err := repository.CommentDelete(commentId)
+		if err != nil {
+			return commentResponse, err
+		}
+		//commentResponse.StatusCode = 0
+		//commentResponse.StatusMsg = "comments deleted successfully!"
+		return commentResponse, nil
+	}
 
-// 	//info, err := repository.InsertUser(userName, password)
-// 	//if err != nil {
-// 	//	return registResponse, err
-// 	//}
+	//info, err := repository.InsertUser(userName, password)
+	//if err != nil {
+	//	return registResponse, err
+	//}
 
-// 	//commentResponse.StatusCode = 1 //评论失败
-// 	//commentResponse.StatusMsg = "comment failure!"
-// 	return commentResponse, nil
-// }
+	//commentResponse.StatusCode = 1 //评论失败
+	//commentResponse.StatusMsg = "comment failure!"
+	return commentResponse, nil
+}
 
-// func messageCommentInfo(info *repository.Comment) *message.Comment {
-// 	userInfo, err := repository.GetUserInfo(info.UserId)
-// 	userTemp := messageUserInfo(userInfo)
-// 	if err != nil {
-// 		return nil
-// 	}
-// 	return &message.Comment{
-// 		Id:         info.CommentId,
-// 		User:       userTemp,
-// 		Content:    info.Comment,
-// 		CreateDate: info.Time,
-// 	}
-// }
+func messageCommentInfo(info *repository.Comment) *message.Comment {
+	userInfo, err := repository.GetUserInfo(info.UserId)
+	userTemp := messageUserInfo(userInfo)
+	if err != nil {
+		return nil
+	}
+	return &message.Comment{
+		Id:         info.CommentId,
+		User:       userTemp,
+		Content:    info.Comment,
+		CreateDate: info.Time,
+	}
+}
 
 //下面这段就是根据用户name(user_name)找到用户ID(user_id)
 func GetUserData(user_name string) (*User, error) {
@@ -99,6 +100,7 @@ func CommentList(token string, videoId int64) (*message.DouyinCommentListRespons
 	video := messageVideoInfo(v)
 
 	comments, err := repository.CommentList(video.Id)
+	fmt.Printf("comments:%v\n", comments)
 
 	if err != nil {
 		return nil, err
@@ -109,8 +111,21 @@ func CommentList(token string, videoId int64) (*message.DouyinCommentListRespons
 	}
 
 	for i, comment := range comments {
+		//为了找到video_id所对应的user_id，在通过user_id找到user_name.传递给前端
+		userID := comment.UserId
+		user, _ := repository.GetUser(userID)
+		users := messageUserInfo(user)
+		/* 	if err != nil {
+			return nil, err
+		}
+		users := &user{
+			Id:   user.Id,
+			Name: user.Name,
+		} */
+
 		v := &message.Comment{
 			Id:         comment.CommentId,
+			User:       users,
 			Content:    comment.Comment,
 			CreateDate: comment.Time,
 		}
