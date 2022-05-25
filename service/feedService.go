@@ -3,6 +3,7 @@ package service
 import (
 	"TikTokLite/proto/pkg"
 	"TikTokLite/repository"
+	"TikTokLite/util"
 )
 
 func GetFeedList(currentTime int64, token string) (*message.DouyinFeedResponse, error) {
@@ -40,7 +41,7 @@ func GetFeedList(currentTime int64, token string) (*message.DouyinFeedResponse, 
 		}
 		feed.VideoList[i] = v
 	}
-	nextTime := currentTime
+	nextTime := util.GetCurrentTime()
 	if len(videoList) != 0 {
 		nextTime = videoList[len(videoList)-1].PublishTime
 	}

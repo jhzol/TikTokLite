@@ -23,6 +23,7 @@ message douyin_comment_action_request {
 message douyin_comment_action_response {
     int32 status_code = 1; // 状态码，0-成功，其他值-失败
     string status_msg = 2; // 返回状态描述
+    Comment comment = 3; // 评论成功返回评论内容
 }
 
 /*

@@ -4,7 +4,6 @@ import (
 	"TikTokLite/log"
 	"TikTokLite/util"
 	"errors"
-	"fmt"
 	"strings"
 
 	"github.com/jinzhu/gorm"
@@ -49,7 +48,6 @@ func InsertUser(userName, password string) (*User, error) {
 	builder.WriteString("*")
 	builder.WriteString(util.GetCurrentTimeForString())
 	token := builder.String()
-	fmt.Println("---------------------密码加密-----------------------------------------------------")
 	hasedPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	/* if err != nil {
 		fmt.Println("用户加密错误")
@@ -57,7 +55,6 @@ func InsertUser(userName, password string) (*User, error) {
 		return
 	} */
 
-	fmt.Println("----------------------------------------------------------------------------------")
 	user := User{
 		Name:            userName,
 		Password:        string(hasedPassword),

@@ -2,10 +2,9 @@ package service
 
 import (
 	"TikTokLite/log"
-	message "TikTokLite/proto/pkg"
+	"TikTokLite/proto/pkg"
 	"TikTokLite/repository"
 	"errors"
-	"fmt"
 	"strconv"
 	"sync"
 
@@ -41,11 +40,11 @@ func UserLogin(userName, password string) (*message.DouyinUserLoginResponse, err
 	}
 	//验证密码是否正确
 	/* 	if password != info.Password {
-		return nil, errors.New("password error")
+
 	} */
-	var users repository.User
-	if err := bcrypt.CompareHashAndPassword([]byte(users.Password), []byte(password)); err != nil {
-		fmt.Println("嘎嘎嘎嘎")
+	err = bcrypt.CompareHashAndPassword([]byte(info.Password), []byte(password))
+	if err != nil {
+		return nil, errors.New("password error")
 	}
 
 	loginResponse := &message.DouyinUserLoginResponse{

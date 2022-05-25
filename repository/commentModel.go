@@ -2,14 +2,10 @@ package repository
 
 import (
 	"TikTokLite/log"
-	"errors"
 	"time"
-
-	"github.com/jinzhu/gorm"
 )
 
 type Comment struct {
-	// gorm.Model
 	CommentId int64  `gorm:"column:comment_id; primary_key;"`
 	UserId    int64  `gorm:"column:user_id"`
 	VideoId   int64  `gorm:"column:video_id"`
@@ -19,7 +15,7 @@ type Comment struct {
 
 func CommentAdd(userId, videoId int64, comment_text string) (*Comment, error) {
 	db := GetDB()
-	nowtime := time.Now().Format("2006-01-02 15:04:05")
+	nowtime := time.Now().Format("01-02")
 	comment := Comment{
 		UserId:  userId,
 		VideoId: videoId,
@@ -50,31 +46,31 @@ func CommentList(videoId int64) ([]Comment, error) {
 	var comments []Comment
 	db := GetDB()
 	err := db.Where("video_id = ?", videoId).Find(&comments).Error
-	if err != nil && err != gorm.ErrRecordNotFound {
-		return comments, err
+	if err != nil {
+		return nil, err
 	}
 	return comments, nil
 
 }
 
-func GetVideoInfo(v interface{}) (*Video, error) {
-	db := GetDB()
-	video := Video{}
-	err := db.Where("video_id = ?", v).Find(&video).Error
-	if err != nil {
-		return nil, errors.New("video error")
-	}
-	return &video, err
-}
+// func GetVideoInfo(v interface{}) (*Video, error) {
+// 	db := GetDB()
+// 	video := Video{}
+// 	err := db.Where("video_id = ?", v).Find(&video).Error
+// 	if err != nil {
+// 		return nil, errors.New("video error")
+// 	}
+// 	return &video, err
+// }
 
-//根据user_id找到所有的用户信息
-func GetUser(v interface{}) (*User, error) {
-	db := GetDB()
-	var user User
-	err := db.Where("user_id = ?", v).Find(&user).Error
-	if err != nil {
-		return nil, errors.New("user error")
-	}
-	return &user, nil
+// //根据user_id找到所有的用户信息
+// func GetUser(v interface{}) (*User, error) {
+// 	db := GetDB()
+// 	var user User
+// 	err := db.Where("user_id = ?", v).Find(&user).Error
+// 	if err != nil {
+// 		return nil, errors.New("user error")
+// 	}
+// 	return &user, nil
 
-}
+// }
