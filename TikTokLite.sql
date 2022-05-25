@@ -134,4 +134,22 @@ CREATE TRIGGER `false_follower_action` AFTER DELETE ON `relations` FOR EACH ROW 
 ;;
 delimiter ;
 
+-- ----------------------------
+-- Triggers structure for table favorites
+-- ----------------------------
+DROP TRIGGER IF EXISTS `like_action`;
+delimiter ;;
+CREATE TRIGGER `like_action` AFTER INSERT ON `favorites` FOR EACH ROW update videos set favorite_count = favorite_count + 1 where videos.video_id = new.video_id
+;;
+delimiter ;
+
+-- ----------------------------
+-- Triggers structure for table favorites
+-- ----------------------------
+DROP TRIGGER IF EXISTS `unlike_action`;
+delimiter ;;
+CREATE TRIGGER `unlike_action` AFTER DELETE ON `favorites` FOR EACH ROW update videos set favorite_count = favorite_count - 1 where videos.video_id = old.video_id
+;;
+delimiter ;
+
 SET FOREIGN_KEY_CHECKS = 1;
