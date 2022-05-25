@@ -2,11 +2,14 @@ package service
 
 import (
 	"TikTokLite/log"
-	"TikTokLite/proto/pkg"
+	message "TikTokLite/proto/pkg"
 	"TikTokLite/repository"
 	"errors"
+	"fmt"
 	"strconv"
 	"sync"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 var (
@@ -36,9 +39,15 @@ func UserLogin(userName, password string) (*message.DouyinUserLoginResponse, err
 	if err != nil {
 		return nil, err
 	}
-	if password != info.Password {
+	//验证密码是否正确
+	/* 	if password != info.Password {
 		return nil, errors.New("password error")
+	} */
+	var users repository.User
+	if err := bcrypt.CompareHashAndPassword([]byte(users.Password), []byte(password)); err != nil {
+		fmt.Println("嘎嘎嘎嘎")
 	}
+
 	loginResponse := &message.DouyinUserLoginResponse{
 		UserId: info.Id,
 		Token:  info.Token,
