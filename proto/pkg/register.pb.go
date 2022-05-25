@@ -80,9 +80,9 @@ func (m *DouyinUserRegisterRequest) GetPassword() string {
 
 type DouyinUserRegisterResponse struct {
 	StatusCode int32  `protobuf:"varint,1,opt,name=status_code,json=statusCode,proto3" json:"status_code"`
-	StatusMsg  string `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg,omitempty"`
-	UserId     int64  `protobuf:"varint,3,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	Token      string `protobuf:"bytes,4,opt,name=token,proto3" json:"token,omitempty"`
+	StatusMsg  string `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg"`
+	UserId     int64  `protobuf:"varint,3,opt,name=user_id,json=userId,proto3" json:"user_id"`
+	Token      string `protobuf:"bytes,4,opt,name=token,proto3" json:"token"`
 }
 
 func (m *DouyinUserRegisterResponse) Reset()         { *m = DouyinUserRegisterResponse{} }

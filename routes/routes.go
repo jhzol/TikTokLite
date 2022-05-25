@@ -13,7 +13,7 @@ func SetRoute(r *gin.Engine) *gin.Engine {
 		CommentRoutes(douyin)
 		FavoriteRoutes(douyin)
 		RelationRoutes(douyin)
-		douyin.GET("/feed", controller.Feed)
+		douyin.GET("/feed/", controller.Feed)
 	}
 
 	return r

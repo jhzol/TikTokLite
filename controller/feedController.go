@@ -1,34 +1,24 @@
 package controller
 
 import (
-	"TikTokLite/proto/pkg"
 	"TikTokLite/response"
+	"TikTokLite/service"
+	"TikTokLite/util"
+	"strconv"
 	// "encoding/json"
 	"github.com/gin-gonic/gin"
-	"time"
 )
 
-//点赞视频
+//视频流
 func Feed(ctx *gin.Context) {
-	//some test
-	feedResponse := &message.DouyinFeedResponse{
-		NextTime: time.Now().UnixNano(),
+	currentTime, err := strconv.ParseInt(ctx.Query("latest_time"), 10, 64)
+	if err != nil {
+		currentTime = util.GetCurrentTime()
 	}
-	author := message.User{
-		Id:       1,
-		Name:     "test",
-		IsFollow: false,
+	token := ctx.Query("token")
+	feedList, err := service.GetFeedList(currentTime, token)
+	if err != nil {
+		response.Fail(ctx, err.Error(), nil)
 	}
-	video := message.Video{
-		Id:            1,
-		Author:        &author,
-		PlayUrl:       "http://112.74.109.70:9000/video/01.mp4",
-		CoverUrl:      "https://github.com/jhzol/test/blob/master/image/image-20220507170717302.png?raw=true",
-		FavoriteCount: 0,
-		CommentCount:  0,
-		IsFavorite:    false,
-	}
-	feedResponse.VideoList = append(feedResponse.VideoList, &video)
-	// data, _ := json.Marshal(feedResponse)
-	response.Fail(ctx, "feed error", feedResponse)
+	response.Success(ctx, "success", feedList)
 }

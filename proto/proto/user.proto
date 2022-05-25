@@ -23,6 +23,9 @@ message User {
     int64 follow_count = 3; // 关注总数
     int64 follower_count = 4; // 粉丝总数​
     bool is_follow = 5; // true-已关注，false-未关注
+    string avatar = 6; //头像地址
+    string background_image = 7;//背景图片地址
+    string signature = 8;//个性签名
 }
 message Video {
     int64 id = 1; // 视频唯一标识​

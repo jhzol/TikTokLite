@@ -11,18 +11,32 @@ const (
 	errorCode   = 1
 )
 
+type response struct {
+	StatusCode int32
+	StatusMsg  string
+}
+
 func Response(ctx *gin.Context, httpStatus int, v interface{}) {
 	ctx.JSON(httpStatus, v)
 }
 
 func Success(ctx *gin.Context, msg string, v interface{}) {
-	setResponse(ctx, successCode, msg, v)
-	Response(ctx, 200, v)
+	if v == nil {
+		Response(ctx, 200, response{successCode, msg})
+	} else {
+		setResponse(ctx, successCode, msg, v)
+		Response(ctx, 200, v)
+	}
 }
 
 func Fail(ctx *gin.Context, msg string, v interface{}) {
-	setResponse(ctx, errorCode, msg, v)
-	Response(ctx, 200, v)
+	if v == nil {
+		Response(ctx, 200, response{errorCode, msg})
+	} else {
+		setResponse(ctx, errorCode, msg, v)
+		Response(ctx, 200, v)
+	}
+
 }
 
 func setResponse(ctx *gin.Context, StatusCode int64, StatusMsg string, v interface{}) {
