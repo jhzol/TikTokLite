@@ -1,12 +1,12 @@
 mysql:  
-  host: 127.0.0.1
+  host: 112.74.109.70 
   port: 3306
   database: TikTokLite
-  username: root
-  password: 991229
+  username: user
+  password: 123
 minio:
   #minio服务主机ip，需要填具体ip
-  host: 192.168.10.138
+  host: 172.19.141.154
   port: 9000
   accessKeyID: minioadmin
   secretAccessKey: minioadmin
