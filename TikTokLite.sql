@@ -11,7 +11,7 @@
  Target Server Version : 80029
  File Encoding         : 65001
 
- Date: 24/05/2022 11:01:17
+ Date: 26/05/2022 08:33:56
 */
 
 SET NAMES utf8mb4;
@@ -26,7 +26,7 @@ CREATE TABLE `comments`  (
   `user_id` bigint NOT NULL,
   `video_id` bigint NOT NULL,
   `comment` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `time` datetime NULL DEFAULT NULL,
+  `time` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   PRIMARY KEY (`comment_id`) USING BTREE,
   INDEX `commentUser`(`user_id`) USING BTREE,
   INDEX `commentVideo`(`video_id`) USING BTREE,
@@ -99,6 +99,64 @@ CREATE TABLE `videos`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 28 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
+-- Triggers structure for table comments
+-- ----------------------------
+DROP TRIGGER IF EXISTS `comment_action`;
+delimiter ;;
+CREATE TRIGGER `comment_action` AFTER INSERT ON `comments` FOR EACH ROW update videos set comment_count = comment_count + 1 where videos.video_id = new.video_id
+;;
+delimiter ;
+
+-- ----------------------------
+-- Triggers structure for table comments
+-- ----------------------------
+DROP TRIGGER IF EXISTS `delete_comment`;
+delimiter ;;
+CREATE TRIGGER `delete_comment` AFTER DELETE ON `comments` FOR EACH ROW update videos set comment_count = comment_count - 1 where videos.video_id = old.video_id
+;;
+delimiter ;
+
+-- ----------------------------
+-- Triggers structure for table favorites
+-- ----------------------------
+DROP TRIGGER IF EXISTS `like_action`;
+delimiter ;;
+CREATE TRIGGER `like_action` AFTER INSERT ON `favorites` FOR EACH ROW update videos set favorite_count = favorite_count + 1 where videos.video_id = new.video_id
+;
+;;
+delimiter ;
+
+-- ----------------------------
+-- Triggers structure for table favorites
+-- ----------------------------
+DROP TRIGGER IF EXISTS `unlike_action`;
+delimiter ;;
+CREATE TRIGGER `unlike_action` AFTER DELETE ON `favorites` FOR EACH ROW update videos set favorite_count = favorite_count - 1 where videos.video_id = old.video_id
+;
+;;
+delimiter ;
+
+-- ----------------------------
+-- Triggers structure for table relations
+-- ----------------------------
+DROP TRIGGER IF EXISTS `false_follow_action`;
+delimiter ;;
+CREATE TRIGGER `false_follow_action` AFTER DELETE ON `relations` FOR EACH ROW update users set follow_count = follow_count - 1 where users.user_id = old.follow_id
+;
+;;
+delimiter ;
+
+-- ----------------------------
+-- Triggers structure for table relations
+-- ----------------------------
+DROP TRIGGER IF EXISTS `false_follower_action`;
+delimiter ;;
+CREATE TRIGGER `false_follower_action` AFTER DELETE ON `relations` FOR EACH ROW update users set follower_count = follower_count - 1 where users.user_id = old.follower_id
+;
+;;
+delimiter ;
+
+-- ----------------------------
 -- Triggers structure for table relations
 -- ----------------------------
 DROP TRIGGER IF EXISTS `follow_action`;
@@ -113,42 +171,6 @@ delimiter ;
 DROP TRIGGER IF EXISTS `follower_action`;
 delimiter ;;
 CREATE TRIGGER `follower_action` AFTER INSERT ON `relations` FOR EACH ROW update users set follower_count = follower_count + 1 where users.user_id = new.follower_id
-;;
-delimiter ;
-
--- ----------------------------
--- Triggers structure for table relations
--- ----------------------------
-DROP TRIGGER IF EXISTS `false_follow_action`;
-delimiter ;;
-CREATE TRIGGER `false_follow_action` AFTER DELETE ON `relations` FOR EACH ROW update users set follow_count = follow_count - 1 where users.user_id = old.follow_id
-;;
-delimiter ;
-
--- ----------------------------
--- Triggers structure for table relations
--- ----------------------------
-DROP TRIGGER IF EXISTS `false_follower_action`;
-delimiter ;;
-CREATE TRIGGER `false_follower_action` AFTER DELETE ON `relations` FOR EACH ROW update users set follower_count = follower_count - 1 where users.user_id = old.follower_id
-;;
-delimiter ;
-
--- ----------------------------
--- Triggers structure for table favorites
--- ----------------------------
-DROP TRIGGER IF EXISTS `like_action`;
-delimiter ;;
-CREATE TRIGGER `like_action` AFTER INSERT ON `favorites` FOR EACH ROW update videos set favorite_count = favorite_count + 1 where videos.video_id = new.video_id
-;;
-delimiter ;
-
--- ----------------------------
--- Triggers structure for table favorites
--- ----------------------------
-DROP TRIGGER IF EXISTS `unlike_action`;
-delimiter ;;
-CREATE TRIGGER `unlike_action` AFTER DELETE ON `favorites` FOR EACH ROW update videos set favorite_count = favorite_count - 1 where videos.video_id = old.video_id
 ;;
 delimiter ;
 
