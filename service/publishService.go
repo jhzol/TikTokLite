@@ -36,36 +36,14 @@ func PublishVideo(token, saveFile string) (*message.DouyinPublishActionResponse,
 }
 
 func PublishList(token string, userId int64) (*message.DouyinPublishListResponse, error) {
-	u, err := repository.GetUserInfo(userId)
-	if err != nil {
-		return nil, err
-	}
-	user := messageUserInfo(u)
-	videos, err := repository.GetVideoList(user.Id)
+	videos, err := repository.GetVideoList(userId)
 	if err != nil {
 		return nil, err
 	}
 	list := &message.DouyinPublishListResponse{
-		VideoList: make([]*message.Video, len(videos)),
+		VideoList: GetVideoList(videos, token),
 	}
-	followlist, _ := tokenFollowList(token)
-	follow := false
-	if _, ok := followlist[user.Id]; ok {
-		follow = true
-	}
-	user.IsFollow = follow
-	for i, video := range videos {
-		v := &message.Video{
-			Id:            video.Id,
-			Author:        user,
-			PlayUrl:       video.PlayUrl,
-			CoverUrl:      video.CoverUrl,
-			FavoriteCount: video.FavoriteCount,
-			CommentCount:  video.CommentCount,
-			IsFavorite:    false,
-		}
-		list.VideoList[i] = v
-	}
+
 	return list, nil
 }
 

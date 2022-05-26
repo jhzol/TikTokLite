@@ -12,25 +12,8 @@ type Favorite struct {
 	VideoId int64 `gorm:"column:video_id"`
 }
 
-// 联合查询结构
-type FavoriteVideo struct {
-	Id            int64  `gorm:"column:video_id; primary_key;"`
-	AuthorId      int64  `gorm:"column:author_id;"`
-	PlayUrl       string `gorm:"column:play_url;"`
-	CoverUrl      string `gorm:"column:cover_url;"`
-	FavoriteCount int64  `gorm:"column:favorite_count;"`
-	CommentCount  int64  `gorm:"column:comment_count;"`
-	PublishTime   int64  `gorm:"column:publish_time;"`
-	Author        User   `gorm:"foreignKey:AuthorId;"` // 注意设置外键 AuthorId
-	// Author        *User
-}
-
 func (Favorite) TableName() string {
 	return "favorites"
-}
-
-func (FavoriteVideo) TableName() string {
-	return "videos"
 }
 
 func LikeAction(uid, vid int64) error {
@@ -59,14 +42,14 @@ func UnLikeAction(uid, vid int64) error {
 	return nil
 }
 
-func GetFavoriteList(uid int64) ([]FavoriteVideo, error) {
-	var videos []FavoriteVideo
+func GetFavoriteList(uid int64) ([]Video, error) {
+	var videos []Video
 	db := GetDB()
 	err := db.Preload("Author").
 		Joins("left join favorites on videos.video_id = favorites.video_id").
 		Where("favorites.user_id = ?", uid).Find(&videos).Error
 	if err == gorm.ErrRecordNotFound {
-		return []FavoriteVideo{}, nil
+		return []Video{}, nil
 	} else if err != nil {
 		return nil, err
 	}
