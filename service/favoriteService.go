@@ -30,7 +30,7 @@ func FavoriteList(token string, uid int64) (*message.DouyinFavoriteListResponse,
 	if err != nil {
 		return nil, err
 	}
-	log.Infof("user:%v, followList:%+v", uid, favList)
+	// log.Infof("user:%v, followList:%+v", uid, favList)
 
 	favListResponse := message.DouyinFavoriteListResponse{
 		VideoList: make([]*message.Video, len(favList)),
@@ -41,11 +41,11 @@ func FavoriteList(token string, uid int64) (*message.DouyinFavoriteListResponse,
 
 	for i, v := range favList {
 
-		u, err := repository.GetUserInfo(v.AuthorId)
-		if err != nil {
-			return nil, err
-		}
-		user := messageUserInfo(u)
+		// u, err := repository.GetUserInfo(v.AuthorId)
+		// if err != nil {
+		// 	return nil, err
+		// }
+		user := messageUserInfo(&v.Author)
 
 		video := &message.Video{
 			Id:            v.Id,
