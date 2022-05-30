@@ -11,7 +11,7 @@
  Target Server Version : 80029
  File Encoding         : 65001
 
- Date: 26/05/2022 08:33:56
+ Date: 30/05/2022 14:58:06
 */
 
 SET NAMES utf8mb4;
@@ -32,7 +32,7 @@ CREATE TABLE `comments`  (
   INDEX `commentVideo`(`video_id`) USING BTREE,
   CONSTRAINT `commentuser` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE RESTRICT,
   CONSTRAINT `commentvideo` FOREIGN KEY (`video_id`) REFERENCES `videos` (`video_id`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 21 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for favorites
@@ -47,7 +47,7 @@ CREATE TABLE `favorites`  (
   INDEX `favoriteVideo`(`video_id`) USING BTREE,
   CONSTRAINT `favoriteuser` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE RESTRICT,
   CONSTRAINT `favoritevideo` FOREIGN KEY (`video_id`) REFERENCES `videos` (`video_id`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 29 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for relations
@@ -62,7 +62,7 @@ CREATE TABLE `relations`  (
   INDEX `FollowerId`(`follower_id`) USING BTREE,
   CONSTRAINT `followerid` FOREIGN KEY (`follower_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE RESTRICT,
   CONSTRAINT `followid` FOREIGN KEY (`follow_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 21 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for users
@@ -74,12 +74,13 @@ CREATE TABLE `users`  (
   `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `follow_count` bigint NULL DEFAULT NULL,
   `follower_count` bigint NULL DEFAULT NULL,
-  `token` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `total_favorited` bigint NULL DEFAULT NULL,
+  `favorite_count` bigint NULL DEFAULT NULL,
   `avatar` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `background_image` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `signature` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   PRIMARY KEY (`user_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 26 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for videos
@@ -96,7 +97,7 @@ CREATE TABLE `videos`  (
   PRIMARY KEY (`video_id`) USING BTREE,
   INDEX `user`(`author_id`) USING BTREE,
   CONSTRAINT `authorid` FOREIGN KEY (`author_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 28 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 60 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Triggers structure for table comments
@@ -133,6 +134,42 @@ DROP TRIGGER IF EXISTS `unlike_action`;
 delimiter ;;
 CREATE TRIGGER `unlike_action` AFTER DELETE ON `favorites` FOR EACH ROW update videos set favorite_count = favorite_count - 1 where videos.video_id = old.video_id
 ;
+;;
+delimiter ;
+
+-- ----------------------------
+-- Triggers structure for table favorites
+-- ----------------------------
+DROP TRIGGER IF EXISTS `faved_count`;
+delimiter ;;
+CREATE TRIGGER `faved_count` AFTER INSERT ON `favorites` FOR EACH ROW update users,(select author_id from videos,favorites where videos.video_id = new.video_id) a set total_favorited = total_favorited + 1 where  a.author_id = users.user_id
+;;
+delimiter ;
+
+-- ----------------------------
+-- Triggers structure for table favorites
+-- ----------------------------
+DROP TRIGGER IF EXISTS `unfaved_count`;
+delimiter ;;
+CREATE TRIGGER `unfaved_count` AFTER DELETE ON `favorites` FOR EACH ROW update users,(select author_id from videos,favorites where videos.video_id = old.video_id) a set total_favorited = total_favorited - 1 where  a.author_id = users.user_id
+;;
+delimiter ;
+
+-- ----------------------------
+-- Triggers structure for table favorites
+-- ----------------------------
+DROP TRIGGER IF EXISTS `fav_count`;
+delimiter ;;
+CREATE TRIGGER `fav_count` AFTER INSERT ON `favorites` FOR EACH ROW update users set users.favorite_count = users.favorite_count + 1 where users.user_id = new.user_id
+;;
+delimiter ;
+
+-- ----------------------------
+-- Triggers structure for table favorites
+-- ----------------------------
+DROP TRIGGER IF EXISTS `unfav_count`;
+delimiter ;;
+CREATE TRIGGER `unfav_count` AFTER DELETE ON `favorites` FOR EACH ROW update users set users.favorite_count = users.favorite_count - 1 where users.user_id = old.user_id
 ;;
 delimiter ;
 
