@@ -11,12 +11,18 @@ import (
 
 //视频流
 func Feed(ctx *gin.Context) {
+	var userId int64
 	currentTime, err := strconv.ParseInt(ctx.Query("latest_time"), 10, 64)
 	if err != nil {
 		currentTime = util.GetCurrentTime()
 	}
 	token := ctx.Query("token")
-	feedList, err := service.GetFeedList(currentTime, token)
+	userId, err = util.VerifyToken(token)
+	if err != nil {
+		response.Fail(ctx, err.Error(), nil)
+		return
+	}
+	feedList, err := service.GetFeedList(currentTime, userId)
 	if err != nil {
 		response.Fail(ctx, err.Error(), nil)
 	}

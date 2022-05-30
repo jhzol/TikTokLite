@@ -4,13 +4,14 @@ import (
 	"TikTokLite/log"
 	"TikTokLite/response"
 	"TikTokLite/service"
+	"TikTokLite/util"
 	"github.com/gin-gonic/gin"
+	"strconv"
 )
 
 //用户登录
 func UserLogin(ctx *gin.Context) {
 	var err error
-	log.Debug("debug print")
 	userName := ctx.Query("username")
 	password := ctx.Query("password")
 	if len(userName) > 32 || len(password) > 32 { //最长32位字符
@@ -50,7 +51,16 @@ func GetUserInfo(ctx *gin.Context) {
 	var err error
 	userId := ctx.Query("user_id")
 	token := ctx.Query("token")
-	userinfo, err := service.UserInfo(userId, token)
+	uid, err := util.VerifyToken(token)
+	if err != nil {
+		response.Fail(ctx, err.Error(), nil)
+		return
+	}
+	if strconv.FormatInt(uid, 10) != userId {
+		response.Fail(ctx, "token error", nil)
+		return
+	}
+	userinfo, err := service.UserInfo(uid)
 	if err != nil {
 		log.Infof("get userinfo  error : %s", err)
 		response.Fail(ctx, err.Error(), nil)

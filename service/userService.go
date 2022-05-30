@@ -1,18 +1,12 @@
 package service
 
 import (
-	"TikTokLite/log"
 	"TikTokLite/proto/pkg"
 	"TikTokLite/repository"
+	"TikTokLite/util"
 	"errors"
-	"strconv"
-	"sync"
 
 	"golang.org/x/crypto/bcrypt"
-)
-
-var (
-	currentUser sync.Map
 )
 
 func UserRegister(userName, password string) (*message.DouyinUserRegisterResponse, error) {
@@ -24,12 +18,14 @@ func UserRegister(userName, password string) (*message.DouyinUserRegisterRespons
 	if err != nil {
 		return nil, err
 	}
-	user := messageUserInfo(info)
+	token, err := util.GenToken(info.Id, userName)
+	if err != nil {
+		return nil, err
+	}
 	registResponse := &message.DouyinUserRegisterResponse{
 		UserId: info.Id,
-		Token:  info.Token,
+		Token:  token,
 	}
-	currentUser.Store(info.Token, user)
 	return registResponse, nil
 }
 
@@ -39,42 +35,29 @@ func UserLogin(userName, password string) (*message.DouyinUserLoginResponse, err
 		return nil, err
 	}
 	//验证密码是否正确
-	/* 	if password != info.Password {
-
-	} */
 	err = bcrypt.CompareHashAndPassword([]byte(info.Password), []byte(password))
 	if err != nil {
 		return nil, errors.New("password error")
 	}
-
+	token, err := util.GenToken(info.Id, userName)
+	if err != nil {
+		return nil, err
+	}
 	loginResponse := &message.DouyinUserLoginResponse{
 		UserId: info.Id,
-		Token:  info.Token,
+		Token:  token,
 	}
-	user := messageUserInfo(info)
-	currentUser.Store(info.Token, user)
-	log.Infof("login user:%+v", user)
 	return loginResponse, nil
 }
 
 //获取登录用户的信息
-func UserInfo(userID, token string) (*message.DouyinUserResponse, error) {
-	info, err := CheckCurrentUser(token)
+func UserInfo(userID int64) (*message.DouyinUserResponse, error) {
+	info, err := repository.GetUserInfo(userID)
 	if err != nil {
 		return nil, err
 	}
-	if strconv.FormatInt(info.Id, 10) != userID {
-		return nil, errors.New("token error")
-	}
-	return &message.DouyinUserResponse{User: info}, nil
-}
-
-func CheckCurrentUser(token string) (*message.User, error) {
-	user, ok := currentUser.Load(token)
-	if !ok {
-		return nil, errors.New("please login your account or user doesn't exist")
-	}
-	return user.(*message.User), nil
+	user := messageUserInfo(info)
+	return &message.DouyinUserResponse{User: user}, nil
 }
 
 func messageUserInfo(info *repository.User) *message.User {
@@ -87,5 +70,7 @@ func messageUserInfo(info *repository.User) *message.User {
 		Avatar:          info.Avatar,
 		BackgroundImage: info.BackgroundImage,
 		Signature:       info.Signature,
+		TotalFavorited:  info.TotalFav,
+		FavoriteCount:   info.FavCount,
 	}
 }

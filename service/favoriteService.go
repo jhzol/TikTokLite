@@ -6,9 +6,7 @@ import (
 	"TikTokLite/repository"
 )
 
-func FavoriteAction(token string, vid int64, action int8) error {
-	userInfo, _ := CheckCurrentUser(token)
-	uid := userInfo.Id
+func FavoriteAction(uid, vid int64, action int8) error {
 	if action == 1 {
 		log.Infof("like action uid:%v,vid:%v", uid, vid)
 		err := repository.LikeAction(uid, vid)
@@ -25,7 +23,7 @@ func FavoriteAction(token string, vid int64, action int8) error {
 	return nil
 }
 
-func FavoriteList(token string, uid int64) (*message.DouyinFavoriteListResponse, error) {
+func FavoriteList(tokenUid, uid int64) (*message.DouyinFavoriteListResponse, error) {
 	favList, err := repository.GetFavoriteList(uid)
 	if err != nil {
 		return nil, err
@@ -33,19 +31,15 @@ func FavoriteList(token string, uid int64) (*message.DouyinFavoriteListResponse,
 	// log.Infof("user:%v, followList:%+v", uid, favList)
 
 	favListResponse := message.DouyinFavoriteListResponse{
-		VideoList: GetVideoList(favList, token),
+		VideoList: VideoList(favList, tokenUid),
 	}
 
 	return &favListResponse, nil
 }
 
-func tokenFavList(token string) (map[int64]struct{}, error) {
+func tokenFavList(tokenUserId int64) (map[int64]struct{}, error) {
 	m := make(map[int64]struct{})
-	user, err := CheckCurrentUser(token)
-	if err != nil {
-		return m, nil
-	}
-	list, err := repository.GetFavoriteList(user.Id)
+	list, err := repository.GetFavoriteList(tokenUserId)
 	if err != nil {
 		return nil, err
 	}

@@ -45,7 +45,7 @@ func CommentDelete(comment_id int64) error {
 func CommentList(videoId int64) ([]Comment, error) {
 	var comments []Comment
 	db := GetDB()
-	err := db.Where("video_id = ?", videoId).Find(&comments).Error
+	err := db.Where("video_id = ?", videoId).Order("comment_id DESC").Find(&comments).Error
 	if err != nil {
 		return nil, err
 	}

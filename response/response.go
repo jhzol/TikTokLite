@@ -35,6 +35,7 @@ func Fail(ctx *gin.Context, msg string, v interface{}) {
 	} else {
 		setResponse(ctx, errorCode, msg, v)
 		Response(ctx, 200, v)
+		ctx.Abort()
 	}
 
 }

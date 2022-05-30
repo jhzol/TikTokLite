@@ -12,9 +12,7 @@ import (
 	"strings"
 )
 
-func PublishVideo(token, saveFile string) (*message.DouyinPublishActionResponse, error) {
-	user, _ := CheckCurrentUser(token)
-	userId := user.Id
+func PublishVideo(userId int64, saveFile string) (*message.DouyinPublishActionResponse, error) {
 	client := minioStore.NewMinioClient()
 	videourl, err := client.UploadFile("video", saveFile, strconv.FormatInt(userId, 10))
 	if err != nil {
@@ -35,13 +33,13 @@ func PublishVideo(token, saveFile string) (*message.DouyinPublishActionResponse,
 	return &message.DouyinPublishActionResponse{}, nil
 }
 
-func PublishList(token string, userId int64) (*message.DouyinPublishListResponse, error) {
+func PublishList(tokenUserId, userId int64) (*message.DouyinPublishListResponse, error) {
 	videos, err := repository.GetVideoList(userId)
 	if err != nil {
 		return nil, err
 	}
 	list := &message.DouyinPublishListResponse{
-		VideoList: GetVideoList(videos, token),
+		VideoList: VideoList(videos, tokenUserId),
 	}
 
 	return list, nil

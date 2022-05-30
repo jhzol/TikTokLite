@@ -3,6 +3,7 @@ package controller
 import (
 	"TikTokLite/response"
 	"TikTokLite/service"
+	"TikTokLite/util"
 	"github.com/gin-gonic/gin"
 	"strconv"
 )
@@ -10,6 +11,11 @@ import (
 //关注操作
 func RelationAction(ctx *gin.Context) {
 	token := ctx.Query("token")
+	tokenUserId, err := util.VerifyToken(token)
+	if err != nil {
+		response.Fail(ctx, err.Error(), nil)
+		return
+	}
 	toUserId := ctx.Query("to_user_id")
 	touid, err := strconv.ParseInt(toUserId, 10, 64)
 	if err != nil {
@@ -17,7 +23,7 @@ func RelationAction(ctx *gin.Context) {
 		return
 	}
 	action := ctx.Query("action_type")
-	err = service.RelationAction(touid, token, action)
+	err = service.RelationAction(touid, tokenUserId, action)
 	if err != nil {
 		response.Fail(ctx, err.Error(), nil)
 		return
@@ -28,13 +34,18 @@ func RelationAction(ctx *gin.Context) {
 //获取关注列表
 func GetFollowList(ctx *gin.Context) {
 	token := ctx.Query("token")
+	tokenUserId, err := util.VerifyToken(token)
+	if err != nil {
+		response.Fail(ctx, err.Error(), nil)
+		return
+	}
 	UserId := ctx.Query("user_id")
 	uid, err := strconv.ParseInt(UserId, 10, 64)
 	if err != nil {
 		response.Fail(ctx, err.Error(), nil)
 		return
 	}
-	followList, err := service.RelationFollowList(uid, token)
+	followList, err := service.RelationFollowList(uid, tokenUserId)
 	if err != nil {
 		response.Fail(ctx, err.Error(), nil)
 		return
@@ -45,13 +56,18 @@ func GetFollowList(ctx *gin.Context) {
 //获取关注者列表
 func GetFollowerList(ctx *gin.Context) {
 	token := ctx.Query("token")
+	tokenUserId, err := util.VerifyToken(token)
+	if err != nil {
+		response.Fail(ctx, err.Error(), nil)
+		return
+	}
 	UserId := ctx.Query("user_id")
 	uid, err := strconv.ParseInt(UserId, 10, 64)
 	if err != nil {
 		response.Fail(ctx, err.Error(), nil)
 		return
 	}
-	followerList, err := service.RelationFollowerList(uid, token)
+	followerList, err := service.RelationFollowerList(uid, tokenUserId)
 	if err != nil {
 		response.Fail(ctx, err.Error(), nil)
 		return

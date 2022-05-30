@@ -26,6 +26,8 @@ message User {
     string avatar = 6; //头像地址
     string background_image = 7;//背景图片地址
     string signature = 8;//个性签名
+    int64 total_favorited=9;
+    int64 favorite_count=10;
 }
 message Video {
     int64 id = 1; // 视频唯一标识​

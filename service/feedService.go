@@ -6,33 +6,33 @@ import (
 	"TikTokLite/util"
 )
 
-func GetFeedList(currentTime int64, token string) (*message.DouyinFeedResponse, error) {
+func GetFeedList(currentTime, tokenUserId int64) (*message.DouyinFeedResponse, error) {
 	videoList, err := repository.GetVideoListByFeed(currentTime)
 	if err != nil {
 		return nil, err
 	}
 	feed := &message.DouyinFeedResponse{
-		VideoList: GetVideoList(videoList, token),
+		VideoList: VideoList(videoList, tokenUserId),
 	}
 
 	nextTime := util.GetCurrentTime()
-	if len(videoList) != 0 {
+	if len(videoList) == 20 {
 		nextTime = videoList[len(videoList)-1].PublishTime
 	}
 	feed.NextTime = nextTime
 	return feed, nil
 }
 
-func GetVideoList(videoList []repository.Video, token string) []*message.Video {
+func VideoList(videoList []repository.Video, userId int64) []*message.Video {
 	var err error
 	FollowList := make(map[int64]struct{})
 	favList := make(map[int64]struct{})
-	if token != "" {
-		FollowList, err = tokenFollowList(token)
+	if userId != int64(0) {
+		FollowList, err = tokenFollowList(userId)
 		if err != nil {
 			return nil
 		}
-		favList, err = tokenFavList(token)
+		favList, err = tokenFavList(userId)
 		if err != nil {
 			return nil
 		}

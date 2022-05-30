@@ -18,11 +18,7 @@ func PublishAction(ctx *gin.Context) {
 	token := ctx.PostForm("token")
 	log.Infof("token:%s", token)
 	data, err := ctx.FormFile("data")
-	if err != nil {
-		response.Fail(ctx, err.Error(), nil)
-		return
-	}
-	_, err = service.CheckCurrentUser(token)
+	userId, err := util.VerifyToken(token)
 	if err != nil {
 		response.Fail(ctx, err.Error(), nil)
 		return
@@ -30,14 +26,14 @@ func PublishAction(ctx *gin.Context) {
 	filename := filepath.Base(data.Filename)
 
 	finalName := fmt.Sprintf("%s_%s", util.RandomString(), filename)
-	videopath := viper.GetString("videofile")
-	saveFile := filepath.Join(videopath, finalName)
+	videoPath := viper.GetString("videofile")
+	saveFile := filepath.Join(videoPath, finalName)
 	log.Debug(saveFile)
 	if err := ctx.SaveUploadedFile(data, saveFile); err != nil {
 		response.Fail(ctx, err.Error(), nil)
 		return
 	}
-	publish, err := service.PublishVideo(token, saveFile)
+	publish, err := service.PublishVideo(userId, saveFile)
 	if err != nil {
 		response.Fail(ctx, err.Error(), nil)
 		return
@@ -49,12 +45,17 @@ func PublishAction(ctx *gin.Context) {
 //获取视频列表
 func GetPublishList(ctx *gin.Context) {
 	token := ctx.Query("token")
+	tokenUserId, err := util.VerifyToken(token)
+	if err != nil {
+		response.Fail(ctx, err.Error(), nil)
+		return
+	}
 	id := ctx.Query("user_id")
 	userId, err := strconv.ParseInt(id, 10, 64)
 	if err != nil {
 		response.Fail(ctx, err.Error(), nil)
 	}
-	list, err := service.PublishList(token, userId)
+	list, err := service.PublishList(tokenUserId, userId)
 	if err != nil {
 		response.Fail(ctx, err.Error(), nil)
 		return

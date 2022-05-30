@@ -6,19 +6,17 @@ import (
 	"TikTokLite/repository"
 )
 
-type User struct {
-	// gorm.Model
-	Id       int64  `gorm:"column:user_id; primary_key;"`
-	Name     string `gorm:"column:user_name"`
-	Password string `gorm:"column:password"`
-	Follow   int64  `gorm:"column:follow_count"`
-	Follower int64  `gorm:"column:follower_count"`
-	Token    string `gorm:"column:token"`
-}
+// type User struct {
+// 	// gorm.Model
+// 	Id       int64  `gorm:"column:user_id; primary_key;"`
+// 	Name     string `gorm:"column:user_name"`
+// 	Password string `gorm:"column:password"`
+// 	Follow   int64  `gorm:"column:follow_count"`
+// 	Follower int64  `gorm:"column:follower_count"`
+// 	Token    string `gorm:"column:token"`
+// }
 
-func CommentAction(commentId, videoId int64, token, comment_text, actionType string) (*message.DouyinCommentActionResponse, error) {
-	userinfo, _ := CheckCurrentUser(token)
-	userId := userinfo.Id
+func CommentAction(commentId, videoId, userId int64, comment_text, actionType string) (*message.DouyinCommentActionResponse, error) {
 
 	if actionType == "1" {
 		//commentInfo, err := repository.CommentAdd(userId, videoId, comment_text)
@@ -51,28 +49,8 @@ func CommentAction(commentId, videoId int64, token, comment_text, actionType str
 
 }
 
-// //下面这段就是根据用户name(user_name)找到用户ID(user_id)
-// func GetUserData(user_name string) (*User, error) {
-// 	info, err := repository.GetUserInfo(user_name)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	user := searchUserData(info)
-// 	return &user, nil
-// }
-// func searchUserData(info *repository.User) User {
-// 	return User{
-// 		Id:       info.Id,
-// 		Name:     info.Name,
-// 		Follow:   info.Follow,
-// 		Follower: info.Follower,
-// 		Token:    info.Token,
-// 	}
-// }
-
 //用户评论
-func CommentList(token string, videoId int64) (*message.DouyinCommentListResponse, error) {
+func CommentList(videoId int64) (*message.DouyinCommentListResponse, error) {
 	comments, err := repository.CommentList(videoId)
 	if err != nil {
 		return nil, err
