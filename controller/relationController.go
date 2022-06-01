@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"TikTokLite/common"
 	"TikTokLite/response"
 	"TikTokLite/service"
 	"strconv"
@@ -11,12 +10,15 @@ import (
 
 //关注操作
 func RelationAction(ctx *gin.Context) {
-	token := ctx.Query("token")
-	tokenUserId, err := common.VerifyToken(token)
-	if err != nil {
+	//token := ctx.Query("token")
+	//tokenUserId, err := common.VerifyToken(token)
+	/* if err != nil {
 		response.Fail(ctx, err.Error(), nil)
 		return
-	}
+	} */
+	tokens, _ := ctx.Get("UserId")
+	tokenUserId := tokens.(int64)
+
 	toUserId := ctx.Query("to_user_id")
 	touid, err := strconv.ParseInt(toUserId, 10, 64)
 	if err != nil {
@@ -34,12 +36,15 @@ func RelationAction(ctx *gin.Context) {
 
 //获取关注列表
 func GetFollowList(ctx *gin.Context) {
-	token := ctx.Query("token")
-	tokenUserId, err := common.VerifyToken(token)
-	if err != nil {
+	//token := ctx.Query("token")
+	//tokenUserId, err := common.VerifyToken(token)
+	/* if err != nil {
 		response.Fail(ctx, err.Error(), nil)
 		return
-	}
+	} */
+	tokens, _ := ctx.Get("UserId")
+	tokenUserId := tokens.(int64)
+
 	UserId := ctx.Query("user_id")
 	uid, err := strconv.ParseInt(UserId, 10, 64)
 	if err != nil {
@@ -56,12 +61,15 @@ func GetFollowList(ctx *gin.Context) {
 
 //获取关注者列表
 func GetFollowerList(ctx *gin.Context) {
-	token := ctx.Query("token")
+	/* token := ctx.Query("token")
 	tokenUserId, err := common.VerifyToken(token)
 	if err != nil {
 		response.Fail(ctx, err.Error(), nil)
 		return
-	}
+	} */
+	tokens, _ := ctx.Get("UserId")
+	tokenUserId := tokens.(int64)
+
 	UserId := ctx.Query("user_id")
 	uid, err := strconv.ParseInt(UserId, 10, 64)
 	if err != nil {

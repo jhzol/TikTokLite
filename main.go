@@ -13,11 +13,11 @@ import (
 func main() {
 	Init()
 	defer common.CloseDataBase()
-	defer common.CloseReBase()
+	//defer common.CloseReBase()
 	defer log.Sync()
 	r := gin.Default()
 	r = routes.SetRoute(r)
-	r.Run()
+	r.Run(":5050")
 }
 
 func Init() {
@@ -30,7 +30,7 @@ func Init() {
 	}
 	log.InitLog()
 	common.InitDatabase()
-	common.RedisInit()
+	//common.RedisInit()
 	videoPath := viper.GetString("videofile")
 	picPath := viper.GetString("picfile")
 	os.Mkdir(videoPath, os.ModePerm)

@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"TikTokLite/common"
 	"TikTokLite/response"
 	"TikTokLite/service"
 	"TikTokLite/util"
@@ -18,8 +17,11 @@ func Feed(ctx *gin.Context) {
 	if err != nil {
 		currentTime = util.GetCurrentTime()
 	}
-	token := ctx.Query("token")
-	userId, err = common.VerifyToken(token)
+	//token := ctx.Query("token")
+	//userId, err = common.VerifyToken(token)
+	userIds, _ := ctx.Get("UserId")
+	userId = userIds.(int64)
+
 	if err != nil {
 		response.Fail(ctx, err.Error(), nil)
 		return
