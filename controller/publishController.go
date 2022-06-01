@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"TikTokLite/common"
 	"TikTokLite/log"
 	"TikTokLite/response"
 	"TikTokLite/service"
@@ -19,7 +20,7 @@ func PublishAction(ctx *gin.Context) {
 	token := ctx.PostForm("token")
 	log.Infof("token:%s", token)
 	data, err := ctx.FormFile("data")
-	userId, err := util.VerifyToken(token)
+	userId, err := common.VerifyToken(token)
 	if err != nil {
 		response.Fail(ctx, err.Error(), nil)
 		return
@@ -50,7 +51,7 @@ func PublishAction(ctx *gin.Context) {
 //获取视频列表
 func GetPublishList(ctx *gin.Context) {
 	token := ctx.Query("token")
-	tokenUserId, err := util.VerifyToken(token)
+	tokenUserId, err := common.VerifyToken(token)
 	if err != nil {
 		response.Fail(ctx, err.Error(), nil)
 		return

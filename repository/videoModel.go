@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"TikTokLite/common"
 	"TikTokLite/util"
 
 	"github.com/jinzhu/gorm"
@@ -30,7 +31,7 @@ func InsertVideo(authorid int64, playurl, coverurl string) error {
 		CommentCount:  0,
 		PublishTime:   util.GetCurrentTime(),
 	}
-	db := GetDB()
+	db := common.GetDB()
 	err := db.Create(&video).Error
 	if err != nil {
 		return err
@@ -40,7 +41,7 @@ func InsertVideo(authorid int64, playurl, coverurl string) error {
 
 func GetVideoList(AuthorId int64) ([]Video, error) {
 	var videos []Video
-	db := GetDB()
+	db := common.GetDB()
 	err := db.Where("author_id = ?", AuthorId).Preload("Author").Find(&videos).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return videos, err
@@ -50,7 +51,7 @@ func GetVideoList(AuthorId int64) ([]Video, error) {
 
 func GetVideoListByFeed(currentTime int64) ([]Video, error) {
 	var videos []Video
-	db := GetDB()
+	db := common.GetDB()
 	err := db.Where("publish_time < ?", currentTime).Preload("Author").Limit(20).Order("publish_time DESC").Find(&videos).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return videos, err

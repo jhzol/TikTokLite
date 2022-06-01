@@ -1,17 +1,18 @@
 package controller
 
 import (
+	"TikTokLite/common"
 	"TikTokLite/response"
 	"TikTokLite/service"
-	"TikTokLite/util"
-	"github.com/gin-gonic/gin"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 //关注操作
 func RelationAction(ctx *gin.Context) {
 	token := ctx.Query("token")
-	tokenUserId, err := util.VerifyToken(token)
+	tokenUserId, err := common.VerifyToken(token)
 	if err != nil {
 		response.Fail(ctx, err.Error(), nil)
 		return
@@ -34,7 +35,7 @@ func RelationAction(ctx *gin.Context) {
 //获取关注列表
 func GetFollowList(ctx *gin.Context) {
 	token := ctx.Query("token")
-	tokenUserId, err := util.VerifyToken(token)
+	tokenUserId, err := common.VerifyToken(token)
 	if err != nil {
 		response.Fail(ctx, err.Error(), nil)
 		return
@@ -56,7 +57,7 @@ func GetFollowList(ctx *gin.Context) {
 //获取关注者列表
 func GetFollowerList(ctx *gin.Context) {
 	token := ctx.Query("token")
-	tokenUserId, err := util.VerifyToken(token)
+	tokenUserId, err := common.VerifyToken(token)
 	if err != nil {
 		response.Fail(ctx, err.Error(), nil)
 		return

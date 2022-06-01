@@ -1,10 +1,10 @@
 package controller
 
 import (
+	"TikTokLite/common"
 	"TikTokLite/log"
 	"TikTokLite/response"
 	"TikTokLite/service"
-	"TikTokLite/util"
 
 	"github.com/gin-gonic/gin"
 )
@@ -29,7 +29,7 @@ func FavoriteAction(ctx *gin.Context) {
 		response.Fail(ctx, err.Error(), nil)
 		return
 	}
-	tokenUid, err := util.VerifyToken(favInfo.Token)
+	tokenUid, err := common.VerifyToken(favInfo.Token)
 	if err != nil {
 		log.Errorf("token error : %s", err)
 		response.Fail(ctx, err.Error(), nil)
@@ -52,7 +52,7 @@ func GetFavoriteList(ctx *gin.Context) {
 		response.Fail(ctx, err.Error(), nil)
 		return
 	}
-	tokenUid, err := util.VerifyToken(listInfo.Token)
+	tokenUid, err := common.VerifyToken(listInfo.Token)
 	if err != nil {
 		response.Fail(ctx, err.Error(), nil)
 		return

@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"TikTokLite/common"
 	"TikTokLite/log"
 	"time"
 )
@@ -14,7 +15,8 @@ type Comment struct {
 }
 
 func CommentAdd(userId, videoId int64, comment_text string) (*Comment, error) {
-	db := GetDB()
+	db := common.GetDB()
+
 	nowtime := time.Now().Format("01-02")
 	comment := Comment{
 		UserId:  userId,
@@ -23,6 +25,7 @@ func CommentAdd(userId, videoId int64, comment_text string) (*Comment, error) {
 		Time:    nowtime,
 	}
 	result := db.Create(&comment)
+
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -31,8 +34,9 @@ func CommentAdd(userId, videoId int64, comment_text string) (*Comment, error) {
 }
 
 func CommentDelete(comment_id int64) error {
-	db := GetDB()
+	db := common.GetDB()
 	commentTemp := Comment{}
+
 	err := db.Where("comment_id = ?", comment_id).Take(&commentTemp).Error
 	if err != nil {
 		return err
@@ -44,7 +48,14 @@ func CommentDelete(comment_id int64) error {
 
 func CommentList(videoId int64) ([]Comment, error) {
 	var comments []Comment
-	db := GetDB()
+	db := common.GetDB()
+
+	/* c := common.GetRE()
+	values, _ := redis.Values(c.Do("lrange", videoId, "0", "-1"))
+	for _,v := range values{
+
+	} */
+
 	err := db.Where("video_id = ?", videoId).Order("comment_id DESC").Find(&comments).Error
 	if err != nil {
 		return nil, err

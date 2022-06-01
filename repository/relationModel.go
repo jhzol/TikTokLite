@@ -1,7 +1,9 @@
 package repository
 
 import (
+	"TikTokLite/common"
 	"errors"
+
 	"github.com/jinzhu/gorm"
 )
 
@@ -17,7 +19,7 @@ func (Relation) TableName() string {
 }
 
 func FollowAction(userId, toUserId int64) error {
-	db := GetDB()
+	db := common.GetDB()
 	relation := Relation{
 		Follow:   userId,
 		Follower: toUserId,
@@ -34,7 +36,7 @@ func FollowAction(userId, toUserId int64) error {
 }
 
 func UnFollowAction(userId, toUserId int64) error {
-	db := GetDB()
+	db := common.GetDB()
 	err := db.Where("follow_id = ? and follower_id = ?", userId, toUserId).Delete(&Relation{}).Error
 	if err != nil {
 		return err
@@ -43,7 +45,7 @@ func UnFollowAction(userId, toUserId int64) error {
 }
 
 func GetFollowList(userId int64, usertype string) ([]User, error) {
-	db := GetDB()
+	db := common.GetDB()
 	list := []User{}
 	joinArg := "follower"
 	if usertype == "follower" {

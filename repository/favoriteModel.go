@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"TikTokLite/common"
 	"errors"
 
 	"github.com/jinzhu/gorm"
@@ -17,7 +18,7 @@ func (Favorite) TableName() string {
 }
 
 func LikeAction(uid, vid int64) error {
-	db := GetDB()
+	db := common.GetDB()
 	favorite := Favorite{
 		UserId:  uid,
 		VideoId: vid,
@@ -34,7 +35,7 @@ func LikeAction(uid, vid int64) error {
 }
 
 func UnLikeAction(uid, vid int64) error {
-	db := GetDB()
+	db := common.GetDB()
 	err := db.Where("user_id = ? and video_id = ?", uid, vid).Delete(&Favorite{}).Error
 	if err != nil {
 		return err
@@ -44,7 +45,7 @@ func UnLikeAction(uid, vid int64) error {
 
 func GetFavoriteList(uid int64) ([]Video, error) {
 	var videos []Video
-	db := GetDB()
+	db := common.GetDB()
 	err := db.Preload("Author").
 		Joins("left join favorites on videos.video_id = favorites.video_id").
 		Where("favorites.user_id = ?", uid).Find(&videos).Error

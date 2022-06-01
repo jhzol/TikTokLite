@@ -1,7 +1,9 @@
 package repository
 
 import (
+	"TikTokLite/common"
 	"TikTokLite/log"
+
 	"errors"
 
 	"github.com/jinzhu/gorm"
@@ -28,7 +30,7 @@ func (User) TableName() string {
 
 //检查该用户名是否已经存在
 func UserNameIsExist(userName string) error {
-	db := GetDB()
+	db := common.GetDB()
 	user := User{}
 	err := db.Where("user_name = ?", userName).Find(&user).Error
 	if err == nil {
@@ -41,7 +43,7 @@ func UserNameIsExist(userName string) error {
 
 //创建用户
 func InsertUser(userName, password string) (*User, error) {
-	db := GetDB()
+	db := common.GetDB()
 	hasedPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	/* if err != nil {
 		fmt.Println("用户加密错误")
@@ -70,7 +72,7 @@ func InsertUser(userName, password string) (*User, error) {
 
 //获取用户信息
 func GetUserInfo(u interface{}) (*User, error) {
-	db := GetDB()
+	db := common.GetDB()
 	user := User{}
 	var err error
 	switch u.(type) {

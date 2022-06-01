@@ -1,7 +1,6 @@
-package util
+package common
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -13,18 +12,8 @@ func AuthMiddleware() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 
-		//获取authrization header
-		//tokenString := c.GetHeader("Authorization")
 		tokenString := c.Query("token")
 
-		fmt.Printf("tokenString", tokenString)
-
-		//validate token formate
-		/*if tokenString == "" || !strings.HasPrefix(tokenString, "Bearer") {
-			c.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "权限不足666"})
-			c.Abort()
-			return
-		}*/
 		if tokenString == "" {
 			c.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "权限不足666"})
 			c.Abort()

@@ -1,10 +1,10 @@
 package controller
 
 import (
+	"TikTokLite/common"
 	"TikTokLite/log"
 	"TikTokLite/response"
 	"TikTokLite/service"
-	"TikTokLite/util"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -14,7 +14,7 @@ import (
 func CommentAction(ctx *gin.Context) {
 	var err error
 	token := ctx.Query("token")
-	tokenUid, err := util.VerifyToken(token)
+	tokenUid, err := common.VerifyToken(token)
 	if err != nil {
 		log.Errorf("token error : %s", err)
 		response.Fail(ctx, err.Error(), nil)
@@ -53,13 +53,13 @@ func CommentAction(ctx *gin.Context) {
 func GetCommentList(ctx *gin.Context) {
 	var err error
 	video_id := ctx.Query("video_id")
-	token := ctx.Query("token")
+	/* token := ctx.Query("token")
 	_, err = util.VerifyToken(token)
 	if err != nil {
 		log.Errorf("token error : %s", err)
 		response.Fail(ctx, err.Error(), nil)
 		return
-	}
+	} */
 	videoId, err := strconv.ParseInt(video_id, 10, 64)
 	if err != nil {
 		log.Errorf("videoId error : %s", err)

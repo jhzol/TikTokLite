@@ -1,9 +1,9 @@
 package service
 
 import (
-	"TikTokLite/proto/pkg"
+	"TikTokLite/common"
+	message "TikTokLite/proto/pkg"
 	"TikTokLite/repository"
-	"TikTokLite/util"
 	"errors"
 
 	"golang.org/x/crypto/bcrypt"
@@ -18,7 +18,7 @@ func UserRegister(userName, password string) (*message.DouyinUserRegisterRespons
 	if err != nil {
 		return nil, err
 	}
-	token, err := util.GenToken(info.Id, userName)
+	token, err := common.GenToken(info.Id, userName)
 	if err != nil {
 		return nil, err
 	}
@@ -39,7 +39,7 @@ func UserLogin(userName, password string) (*message.DouyinUserLoginResponse, err
 	if err != nil {
 		return nil, errors.New("password error")
 	}
-	token, err := util.GenToken(info.Id, userName)
+	token, err := common.GenToken(info.Id, userName)
 	if err != nil {
 		return nil, err
 	}

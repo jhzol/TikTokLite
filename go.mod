@@ -3,6 +3,7 @@ module TikTokLite
 go 1.18
 
 require (
+	github.com/garyburd/redigo v1.6.3
 	github.com/gin-gonic/gin v1.7.7
 	github.com/gogo/protobuf v1.3.2
 	go.uber.org/zap v1.21.0

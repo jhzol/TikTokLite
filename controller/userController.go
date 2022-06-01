@@ -4,7 +4,6 @@ import (
 	"TikTokLite/log"
 	"TikTokLite/response"
 	"TikTokLite/service"
-	"fmt"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -48,27 +47,22 @@ func UserRegister(ctx *gin.Context) {
 
 //获取用户信息
 func GetUserInfo(ctx *gin.Context) {
-	// var user message.User
+
 	var err error
 	userId := ctx.Query("user_id")
-	//token := ctx.Query("token")
-	//uid, err := util.VerifyToken(token)
-	uid, _ := ctx.Get("UserId")
-	//uid = strconv.ParseInt(uid, 10, 64)
-	t := uid.(int64)
+	uids, _ := ctx.Get("UserId")
+
+	uid := uids.(int64)
 	if err != nil {
 		response.Fail(ctx, err.Error(), nil)
 		return
 	}
-	fmt.Printf("uid:%v\n", uid)
-	fmt.Printf("t:%v\n", t)
-	fmt.Printf("userId:%v\n", userId)
 
-	if strconv.FormatInt(t, 10) != userId {
+	if strconv.FormatInt(uid, 10) != userId {
 		response.Fail(ctx, "token error", nil)
 		return
 	}
-	userinfo, err := service.UserInfo(t)
+	userinfo, err := service.UserInfo(uid)
 	if err != nil {
 		log.Infof("get userinfo  error : %s", err)
 		response.Fail(ctx, err.Error(), nil)

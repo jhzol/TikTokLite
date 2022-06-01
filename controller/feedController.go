@@ -1,10 +1,12 @@
 package controller
 
 import (
+	"TikTokLite/common"
 	"TikTokLite/response"
 	"TikTokLite/service"
 	"TikTokLite/util"
 	"strconv"
+
 	// "encoding/json"
 	"github.com/gin-gonic/gin"
 )
@@ -17,7 +19,7 @@ func Feed(ctx *gin.Context) {
 		currentTime = util.GetCurrentTime()
 	}
 	token := ctx.Query("token")
-	userId, err = util.VerifyToken(token)
+	userId, err = common.VerifyToken(token)
 	if err != nil {
 		response.Fail(ctx, err.Error(), nil)
 		return
