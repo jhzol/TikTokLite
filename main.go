@@ -4,9 +4,10 @@ import (
 	"TikTokLite/log"
 	"TikTokLite/repository"
 	"TikTokLite/routes"
+	"os"
+
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
-	"os"
 )
 
 func main() {

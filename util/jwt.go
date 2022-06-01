@@ -2,7 +2,9 @@ package util
 
 import (
 	"errors"
-	jwt "github.com/golang-jwt/jwt/v4"
+	"fmt"
+
+	"github.com/golang-jwt/jwt/v4"
 )
 
 var (
@@ -50,6 +52,9 @@ func ParsenToken(tokenString string) (*JWTClaims, error) {
 
 //验证token
 func VerifyToken(tokenString string) (int64, error) {
+
+	fmt.Printf("tokenString:%v", tokenString)
+
 	if tokenString == "" {
 		return int64(0), nil
 	}

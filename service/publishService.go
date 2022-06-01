@@ -3,13 +3,15 @@ package service
 import (
 	"TikTokLite/log"
 	"TikTokLite/minioStore"
-	"TikTokLite/proto/pkg"
+	message "TikTokLite/proto/pkg"
 	"TikTokLite/repository"
-	"github.com/spf13/viper"
+	"fmt"
 	"os/exec"
 	"path/filepath"
 	"strconv"
 	"strings"
+
+	"github.com/spf13/viper"
 )
 
 func PublishVideo(userId int64, saveFile string) (*message.DouyinPublishActionResponse, error) {
@@ -19,13 +21,20 @@ func PublishVideo(userId int64, saveFile string) (*message.DouyinPublishActionRe
 		return nil, err
 	}
 	imageFile, err := GetImageFile(saveFile)
+
+	fmt.Printf("imageFile哈哈哈:%v\n", imageFile)
+
 	if err != nil {
 		return nil, err
 	}
+
+	log.Info("imageFile %v\n", imageFile)
+
 	picurl, err := client.UploadFile("pic", imageFile, strconv.FormatInt(userId, 10))
 	if err != nil {
 		picurl = "https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/7909abe413ec4a1e82032d2beb810157~tplv-k3u1fbpfcp-zoom-in-crop-mark:1304:0:0:0.awebp?"
 	}
+
 	err = repository.InsertVideo(userId, videourl, picurl)
 	if err != nil {
 		return nil, err
@@ -46,13 +55,14 @@ func PublishList(tokenUserId, userId int64) (*message.DouyinPublishListResponse,
 }
 
 func GetImageFile(videoPath string) (string, error) {
-	temp := strings.Split(videoPath, "/")
+	temp := strings.Split(videoPath, "\\")
 	videoName := temp[len(temp)-1]
 	b := []byte(videoName)
 	videoName = string(b[:len(b)-3]) + "jpg"
 	picpath := viper.GetString("picfile")
 	picName := filepath.Join(picpath, videoName)
 	cmd := exec.Command("ffmpeg", "-i", videoPath, "-ss", "1", "-f", "image2", "-t", "0.01", "-y", picName)
+	fmt.Printf("cmd:%v", cmd)
 	err := cmd.Run()
 	if err != nil {
 		return "", err
