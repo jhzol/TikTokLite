@@ -11,7 +11,7 @@ func FavoriteRoutes(r *gin.RouterGroup) {
 	favorite := r.Group("favorite")
 	{
 		favorite.POST("/action/", common.AuthMiddleware(), controller.FavoriteAction)
-		favorite.GET("/list/", common.AuthMiddleware(), controller.GetFavoriteList)
+		favorite.GET("/list/", common.AuthWithOutMiddleware(), controller.GetFavoriteList)
 	}
 
 }

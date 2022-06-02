@@ -42,7 +42,7 @@ func InsertVideo(authorid int64, playurl, coverurl string) error {
 func GetVideoList(AuthorId int64) ([]Video, error) {
 	var videos []Video
 	db := common.GetDB()
-	err := db.Where("author_id = ?", AuthorId).Preload("Author").Find(&videos).Error
+	err := db.Where("author_id = ?", AuthorId).Preload("Author").Order("video_id DESC").Find(&videos).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return videos, err
 	}
@@ -52,7 +52,7 @@ func GetVideoList(AuthorId int64) ([]Video, error) {
 func GetVideoListByFeed(currentTime int64) ([]Video, error) {
 	var videos []Video
 	db := common.GetDB()
-	err := db.Where("publish_time < ?", currentTime).Preload("Author").Limit(20).Order("publish_time DESC").Find(&videos).Error
+	err := db.Where("publish_time < ?", currentTime).Preload("Author").Limit(20).Order("video_id DESC").Find(&videos).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return videos, err
 	}

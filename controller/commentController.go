@@ -12,20 +12,10 @@ import (
 //发布评论
 func CommentAction(ctx *gin.Context) {
 	var err error
-	//token := ctx.Query("token")
-	//tokenUid, err := common.VerifyToken(token)
 
 	tokenUids, _ := ctx.Get("UserId")
-	/* if !ok {
-		log.Errorf("token error :%s", err)
-	} */
-	tokenUid := tokenUids.(int64)
 
-	/* if err != nil {
-		log.Errorf("token error : %s", err)
-		response.Fail(ctx, err.Error(), nil)
-		return
-	} */
+	tokenUid := tokenUids.(int64)
 
 	video_id := ctx.Query("video_id")
 	comment_text := ctx.Query("comment_text")

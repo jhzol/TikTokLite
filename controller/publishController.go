@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"TikTokLite/common"
 	"TikTokLite/log"
 	"TikTokLite/response"
 	"TikTokLite/service"
@@ -17,10 +16,8 @@ import (
 //视频发布
 func PublishAction(ctx *gin.Context) {
 	// publishResponse := &message.DouyinPublishActionResponse{}
-	token := ctx.PostForm("token")
-	log.Infof("token:%s", token)
+	userId, _ := ctx.Get("UserId")
 	data, err := ctx.FormFile("data")
-	userId, err := common.VerifyToken(token)
 	if err != nil {
 		response.Fail(ctx, err.Error(), nil)
 		return
@@ -31,37 +28,31 @@ func PublishAction(ctx *gin.Context) {
 	videoPath := viper.GetString("videofile")
 	saveFile := filepath.Join(videoPath, finalName)
 
-	fmt.Println("saveFile:", saveFile)
-	log.Debug(saveFile)
+	log.Info("saveFile:", saveFile)
 
 	if err := ctx.SaveUploadedFile(data, saveFile); err != nil {
 		response.Fail(ctx, err.Error(), nil)
 		return
 	}
-	publish, err := service.PublishVideo(userId, saveFile)
+	publish, err := service.PublishVideo(userId.(int64), saveFile)
 	if err != nil {
 		response.Fail(ctx, err.Error(), nil)
 		return
 	}
-	fmt.Printf("publish嘎嘎嘎嘎嘎:%v", publish)
+	log.Info("publish:%v", publish)
 	response.Success(ctx, "success", publish)
 
 }
 
 //获取视频列表
 func GetPublishList(ctx *gin.Context) {
-	token := ctx.Query("token")
-	tokenUserId, err := common.VerifyToken(token)
-	if err != nil {
-		response.Fail(ctx, err.Error(), nil)
-		return
-	}
+	tokenUserId, _ := ctx.Get("UserId")
 	id := ctx.Query("user_id")
 	userId, err := strconv.ParseInt(id, 10, 64)
 	if err != nil {
 		response.Fail(ctx, err.Error(), nil)
 	}
-	list, err := service.PublishList(tokenUserId, userId)
+	list, err := service.PublishList(tokenUserId.(int64), userId)
 	if err != nil {
 		response.Fail(ctx, err.Error(), nil)
 		return

@@ -17,7 +17,7 @@ func main() {
 	defer log.Sync()
 	r := gin.Default()
 	r = routes.SetRoute(r)
-	r.Run(":5050")
+	r.Run()
 }
 
 func Init() {
