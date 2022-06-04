@@ -17,7 +17,13 @@ type Minio struct {
 	PicBuckets   string
 }
 
-func NewMinioClient() Minio {
+var client Minio
+
+func GetMinio() Minio {
+	return client
+}
+
+func InitMinio() {
 	endpoint := viper.GetString("minio.host")
 	port := viper.GetString("minio.port")
 	endpoint = endpoint + ":" + port
@@ -38,7 +44,7 @@ func NewMinioClient() Minio {
 	if viper.GetString("minio.iswsl") == "true" {
 		endpoint = viper.GetString("minio.winhost") + ":" + port
 	}
-	return Minio{minioClient, endpoint, port, videoBucket, picBucket}
+	client = Minio{minioClient, endpoint, port, videoBucket, picBucket}
 }
 
 func creatBucket(m *minio.Client, bucket string) {

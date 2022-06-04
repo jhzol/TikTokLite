@@ -3,6 +3,7 @@ package main
 import (
 	"TikTokLite/common"
 	"TikTokLite/log"
+	"TikTokLite/minioStore"
 	"TikTokLite/routes"
 	"os"
 
@@ -13,6 +14,7 @@ import (
 func main() {
 	Init()
 	defer common.CloseDataBase()
+	defer common.CloseRedis()
 	//defer common.CloseReBase()
 	defer log.Sync()
 	r := gin.Default()
@@ -30,7 +32,8 @@ func Init() {
 	}
 	log.InitLog()
 	common.InitDatabase()
-	//common.RedisInit()
+	minioStore.InitMinio()
+	common.RedisInit()
 	videoPath := viper.GetString("videofile")
 	picPath := viper.GetString("picfile")
 	os.Mkdir(videoPath, os.ModePerm)

@@ -56,7 +56,7 @@ func ParsenToken(tokenString string) (*JWTClaims, error) {
 //验证token
 func VerifyToken(tokenString string) (int64, error) {
 
-	log.Infof("tokenString:%v", tokenString)
+	log.Debugf("tokenString:%v", tokenString)
 
 	if tokenString == "" {
 		return int64(0), nil

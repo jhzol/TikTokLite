@@ -3,6 +3,8 @@ package repository
 import (
 	"TikTokLite/common"
 	"TikTokLite/log"
+	"encoding/json"
+	"strconv"
 
 	"errors"
 
@@ -45,11 +47,6 @@ func UserNameIsExist(userName string) error {
 func InsertUser(userName, password string) (*User, error) {
 	db := common.GetDB()
 	hasedPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	/* if err != nil {
-		fmt.Println("用户加密错误")
-
-		return
-	} */
 
 	user := User{
 		Name:            userName,
@@ -67,6 +64,7 @@ func InsertUser(userName, password string) (*User, error) {
 		return nil, result.Error
 	}
 	log.Infof("regist user:%+v", user)
+	CacheSetUser(user)
 	return &user, nil
 }
 
@@ -75,9 +73,14 @@ func GetUserInfo(u interface{}) (*User, error) {
 	db := common.GetDB()
 	user := User{}
 	var err error
-	switch u.(type) {
+	switch u := u.(type) {
 	case int64:
+		user, err = CacheGetUser(u)
+		if err == nil {
+			return &user, nil
+		}
 		err = db.Where("user_id = ?", u).Find(&user).Error
+		CacheSetUser(user)
 	case string:
 		err = db.Where("user_name = ?", u).Find(&user).Error
 	default:
@@ -88,4 +91,26 @@ func GetUserInfo(u interface{}) (*User, error) {
 	}
 	log.Infof("%+v", user)
 	return &user, nil
+}
+
+func CacheSetUser(u User) {
+	uid := strconv.FormatInt(u.Id, 10)
+	err := common.CacheHSet("user", uid, u)
+	if err != nil {
+		log.Errorf("set cache error:%+v", err)
+	}
+}
+
+func CacheGetUser(uid int64) (User, error) {
+	key := strconv.FormatInt(uid, 10)
+	data, err := common.CacheHGet("user", key)
+	user := User{}
+	if err != nil {
+		return user, err
+	}
+	err = json.Unmarshal(data, &user)
+	if err != nil {
+		return user, err
+	}
+	return user, nil
 }

@@ -5,7 +5,6 @@ import (
 	"TikTokLite/minioStore"
 	message "TikTokLite/proto/pkg"
 	"TikTokLite/repository"
-	"fmt"
 	"os/exec"
 	"path/filepath"
 	"strconv"
@@ -15,20 +14,18 @@ import (
 )
 
 func PublishVideo(userId int64, saveFile string) (*message.DouyinPublishActionResponse, error) {
-	client := minioStore.NewMinioClient()
+	client := minioStore.GetMinio()
 	videourl, err := client.UploadFile("video", saveFile, strconv.FormatInt(userId, 10))
 	if err != nil {
 		return nil, err
 	}
 	imageFile, err := GetImageFile(saveFile)
 
-	fmt.Printf("imageFile哈哈哈:%v\n", imageFile)
-
 	if err != nil {
 		return nil, err
 	}
 
-	log.Info("imageFile %v\n", imageFile)
+	log.Debugf("imageFile %v\n", imageFile)
 
 	picurl, err := client.UploadFile("pic", imageFile, strconv.FormatInt(userId, 10))
 	if err != nil {
@@ -62,11 +59,10 @@ func GetImageFile(videoPath string) (string, error) {
 	picpath := viper.GetString("picfile")
 	picName := filepath.Join(picpath, videoName)
 	cmd := exec.Command("ffmpeg", "-i", videoPath, "-ss", "1", "-f", "image2", "-t", "0.01", "-y", picName)
-	fmt.Printf("cmd:%v", cmd)
 	err := cmd.Run()
 	if err != nil {
 		return "", err
 	}
-	log.Infof(picName)
+	log.Debugf(picName)
 	return picName, nil
 }

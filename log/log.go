@@ -2,7 +2,6 @@ package log
 
 import (
 	"TikTokLite/util"
-	"fmt"
 	"os"
 
 	"github.com/spf13/viper"
@@ -41,7 +40,6 @@ func InitLog() {
 		MaxAge:     30,                           //日志文件保留天数
 		Compress:   false,                        //是否压缩处理
 	})
-	fmt.Println(path + "info" + now + ".log")
 	infoFileCore := zapcore.NewCore(encoder, zapcore.NewMultiWriteSyncer(infoFileWriteSyncer, zapcore.AddSync(os.Stdout)), lowPriority)
 	//error文件writeSyncer
 	errorFileWriteSyncer := zapcore.AddSync(&lumberjack.Logger{

@@ -16,6 +16,11 @@ minio:
   iswsl: false
   #windows本机ip，视频地址为windows host:port
   winhost: 192.168.1.12
+redis:
+  address: localhost
+  network: tcp
+  port: 6379
+  auth: 123
 videofile: ../file/video/
 logfile: ../file/log/
 picfile: ../file/picture/
