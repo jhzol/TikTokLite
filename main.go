@@ -33,7 +33,7 @@ func Init() {
 	log.InitLog()
 	common.InitDatabase()
 	minioStore.InitMinio()
-	common.RedisInit()
+	// common.RedisInit()
 	videoPath := viper.GetString("videofile")
 	picPath := viper.GetString("picfile")
 	os.Mkdir(videoPath, os.ModePerm)
