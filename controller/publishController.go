@@ -39,7 +39,7 @@ func PublishAction(ctx *gin.Context) {
 		response.Fail(ctx, err.Error(), nil)
 		return
 	}
-	log.Info("publish:%v", publish)
+	log.Infof("publish:%v", publish)
 	response.Success(ctx, "success", publish)
 
 }

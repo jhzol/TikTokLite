@@ -52,7 +52,7 @@ func PublishList(tokenUserId, userId int64) (*message.DouyinPublishListResponse,
 }
 
 func GetImageFile(videoPath string) (string, error) {
-	temp := strings.Split(videoPath, "\\")
+	temp := strings.Split(videoPath, "/")
 	videoName := temp[len(temp)-1]
 	b := []byte(videoName)
 	videoName = string(b[:len(b)-3]) + "jpg"
