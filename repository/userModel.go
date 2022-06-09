@@ -80,6 +80,7 @@ func GetUserInfo(u interface{}) (User, error) {
 			return user, nil
 		}
 		err = db.Where("user_id = ?", u).Find(&user).Error
+
 	case string:
 		err = db.Where("user_name = ?", u).Find(&user).Error
 	default:
