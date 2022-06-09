@@ -37,4 +37,5 @@ message Video {
     int64 favorite_count = 5; // 视频的点赞总数​
     int64 comment_count = 6; // 视频的评论总数​
     bool is_favorite = 7; // true-已点赞，false-未点赞​
+    string title = 8; //视频标题
 }

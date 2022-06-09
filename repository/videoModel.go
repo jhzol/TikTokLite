@@ -18,6 +18,7 @@ type Video struct {
 	FavoriteCount int64  `gorm:"column:favorite_count;"`
 	CommentCount  int64  `gorm:"column:comment_count;"`
 	PublishTime   int64  `gorm:"column:publish_time;"`
+	Title         string `gorm:"column:title;"`
 	Author        User   `gorm:"foreignkey:AuthorId"`
 }
 
@@ -25,7 +26,7 @@ func (Video) TableName() string {
 	return "videos"
 }
 
-func InsertVideo(authorid int64, playurl, coverurl string) error {
+func InsertVideo(authorid int64, playurl, coverurl, title string) error {
 	video := Video{
 		AuthorId:      authorid,
 		PlayUrl:       playurl,
@@ -33,6 +34,7 @@ func InsertVideo(authorid int64, playurl, coverurl string) error {
 		FavoriteCount: 0,
 		CommentCount:  0,
 		PublishTime:   util.GetCurrentTime(),
+		Title:         title,
 	}
 	db := common.GetDB()
 	err := db.Create(&video).Error

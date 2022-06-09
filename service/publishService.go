@@ -12,7 +12,7 @@ import (
 	"strings"
 )
 
-func PublishVideo(userId int64, saveFile string) (*message.DouyinPublishActionResponse, error) {
+func PublishVideo(userId int64, saveFile, title string) (*message.DouyinPublishActionResponse, error) {
 	client := minioStore.GetMinio()
 	videourl, err := client.UploadFile("video", saveFile, strconv.FormatInt(userId, 10))
 	if err != nil {
@@ -31,7 +31,7 @@ func PublishVideo(userId int64, saveFile string) (*message.DouyinPublishActionRe
 		picurl = "https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/7909abe413ec4a1e82032d2beb810157~tplv-k3u1fbpfcp-zoom-in-crop-mark:1304:0:0:0.awebp?"
 	}
 
-	err = repository.InsertVideo(userId, videourl, picurl)
+	err = repository.InsertVideo(userId, videourl, picurl, title)
 	if err != nil {
 		return nil, err
 	}

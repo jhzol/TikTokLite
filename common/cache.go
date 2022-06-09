@@ -186,17 +186,20 @@ func listPop(op, key string) ([]byte, error) {
 
 /////////////////////////Hash类型接口///////////////////////////////////////////
 
-func CacheHSet(key, mkey string, value interface{}) error {
+func CacheHSet(key, mkey string, value ...interface{}) error {
 	conn := redisClient.Get()
 	defer conn.Close()
 
-	data, err := json.Marshal(value)
-	if err != nil {
-		return nil
-	}
-	_, err = conn.Do("HSET", key, mkey, data)
-	if err != nil {
-		return err
+	for _, d := range value {
+		data, err := json.Marshal(d)
+		if err != nil {
+			return nil
+		}
+
+		_, err = conn.Do("HSET", key, mkey, data)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
@@ -206,6 +209,8 @@ func CacheHGet(key, mkey string) ([]byte, error) {
 	defer conn.Close()
 
 	data, err := redis.Bytes(conn.Do("HGET", key, mkey))
+
+	//fmt.Printf("data:%v", data)
 	if err != nil {
 		return []byte{}, err
 	}
@@ -213,4 +218,28 @@ func CacheHGet(key, mkey string) ([]byte, error) {
 		return []byte{}, ErrMissCache
 	}
 	return data, nil
+}
+
+func CacheDelHash(key, mkey string) error {
+
+	conn := redisClient.Get()
+	defer conn.Close()
+
+	_, err := conn.Do("HDEL", key, mkey)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func CacheDelHash2(key, mkey, comment_id string) error {
+
+	conn := redisClient.Get()
+	defer conn.Close()
+
+	_, err := conn.Do("HDEL", key, mkey, comment_id)
+	if err != nil {
+		return err
+	}
+	return nil
 }

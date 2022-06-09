@@ -258,6 +258,7 @@ type Video struct {
 	FavoriteCount int64  `protobuf:"varint,5,opt,name=favorite_count,json=favoriteCount,proto3" json:"favorite_count"`
 	CommentCount  int64  `protobuf:"varint,6,opt,name=comment_count,json=commentCount,proto3" json:"comment_count"`
 	IsFavorite    bool   `protobuf:"varint,7,opt,name=is_favorite,json=isFavorite,proto3" json:"is_favorite"`
+	Title         string `protobuf:"bytes,8,opt,name=title,json=title,proto3" json:"title"`
 }
 
 func (m *Video) Reset()         { *m = Video{} }

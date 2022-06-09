@@ -1,22 +1,22 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : aliyun
+ Source Server         : docker
  Source Server Type    : MySQL
  Source Server Version : 80029
- Source Host           : 112.74.109.70:3306
+ Source Host           : 192.168.1.12:3306
  Source Schema         : TikTokLite
 
  Target Server Type    : MySQL
  Target Server Version : 80029
  File Encoding         : 65001
 
- Date: 30/05/2022 14:58:06
+ Date: 09/06/2022 14:52:30
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
-set global log_bin_trust_function_creators = 1;
+SET global log_bin_trust_function_creators = 1;
 
 -- ----------------------------
 -- Table structure for comments
@@ -33,7 +33,7 @@ CREATE TABLE `comments`  (
   INDEX `commentVideo`(`video_id`) USING BTREE,
   CONSTRAINT `commentuser` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE RESTRICT,
   CONSTRAINT `commentvideo` FOREIGN KEY (`video_id`) REFERENCES `videos` (`video_id`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 21 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 0 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for favorites
@@ -48,7 +48,7 @@ CREATE TABLE `favorites`  (
   INDEX `favoriteVideo`(`video_id`) USING BTREE,
   CONSTRAINT `favoriteuser` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE RESTRICT,
   CONSTRAINT `favoritevideo` FOREIGN KEY (`video_id`) REFERENCES `videos` (`video_id`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 29 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 0 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for relations
@@ -63,7 +63,7 @@ CREATE TABLE `relations`  (
   INDEX `FollowerId`(`follower_id`) USING BTREE,
   CONSTRAINT `followerid` FOREIGN KEY (`follower_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE RESTRICT,
   CONSTRAINT `followid` FOREIGN KEY (`follow_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 21 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 0 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for users
@@ -81,7 +81,7 @@ CREATE TABLE `users`  (
   `background_image` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `signature` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   PRIMARY KEY (`user_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 26 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 0 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for videos
@@ -95,10 +95,11 @@ CREATE TABLE `videos`  (
   `favorite_count` bigint NULL DEFAULT NULL,
   `comment_count` bigint NULL DEFAULT NULL,
   `publish_time` bigint NULL DEFAULT NULL,
+  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   PRIMARY KEY (`video_id`) USING BTREE,
   INDEX `user`(`author_id`) USING BTREE,
   CONSTRAINT `authorid` FOREIGN KEY (`author_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 60 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 0 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Triggers structure for table comments
@@ -124,7 +125,6 @@ delimiter ;
 DROP TRIGGER IF EXISTS `like_action`;
 delimiter ;;
 CREATE TRIGGER `like_action` AFTER INSERT ON `favorites` FOR EACH ROW update videos set favorite_count = favorite_count + 1 where videos.video_id = new.video_id
-;
 ;;
 delimiter ;
 
@@ -134,7 +134,6 @@ delimiter ;
 DROP TRIGGER IF EXISTS `unlike_action`;
 delimiter ;;
 CREATE TRIGGER `unlike_action` AFTER DELETE ON `favorites` FOR EACH ROW update videos set favorite_count = favorite_count - 1 where videos.video_id = old.video_id
-;
 ;;
 delimiter ;
 
@@ -180,7 +179,6 @@ delimiter ;
 DROP TRIGGER IF EXISTS `false_follow_action`;
 delimiter ;;
 CREATE TRIGGER `false_follow_action` AFTER DELETE ON `relations` FOR EACH ROW update users set follow_count = follow_count - 1 where users.user_id = old.follow_id
-;
 ;;
 delimiter ;
 
@@ -190,7 +188,6 @@ delimiter ;
 DROP TRIGGER IF EXISTS `false_follower_action`;
 delimiter ;;
 CREATE TRIGGER `false_follower_action` AFTER DELETE ON `relations` FOR EACH ROW update users set follower_count = follower_count - 1 where users.user_id = old.follower_id
-;
 ;;
 delimiter ;
 
