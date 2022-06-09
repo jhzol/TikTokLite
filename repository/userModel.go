@@ -64,7 +64,7 @@ func InsertUser(userName, password string) (*User, error) {
 		return nil, result.Error
 	}
 	log.Infof("regist user:%+v", user)
-	CacheSetUser(user)
+	go CacheSetUser(user)
 	return &user, nil
 }
 
@@ -88,7 +88,7 @@ func GetUserInfo(u interface{}) (User, error) {
 	if err != nil {
 		return user, errors.New("user error")
 	}
-	CacheSetUser(user)
+	go CacheSetUser(user)
 	log.Infof("%+v", user)
 	return user, nil
 }
