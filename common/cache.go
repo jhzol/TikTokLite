@@ -8,12 +8,26 @@ import (
 	"github.com/spf13/viper"
 	"time"
 
-	"github.com/garyburd/redigo/redis"
+	"github.com/go-redsync/redsync/v4"
+	"github.com/go-redsync/redsync/v4/redis/redigo"
+	"github.com/gomodule/redigo/redis"
 )
 
 var (
-	redisClient  *redis.Pool
+	redisClient *redis.Pool
+	rs          *redsync.Redsync
+	//锁过期时间
+	lockExpiry = 2 * time.Second
+	//获取锁失败重试时间间隔
+	retryDelay = 500 * time.Millisecond
+	//值过期时间
+	valueExpire  = 86400
 	ErrMissCache = errors.New("miss Cache")
+	//锁设置
+	option = []redsync.Option{
+		redsync.WithExpiry(lockExpiry),
+		redsync.WithRetryDelay(retryDelay),
+	}
 )
 
 func RedisInit() {
@@ -41,6 +55,8 @@ func RedisInit() {
 		},
 	}
 	redisClient.Get().Do("flushdb")
+	sync := redigo.NewPool(redisClient)
+	rs = redsync.New(sync)
 	log.Info("redis conn success")
 
 }
@@ -52,16 +68,43 @@ func CloseRedis() {
 	redisClient.Close()
 }
 
+func Exists(key string) bool {
+	conn := redisClient.Get()
+	defer conn.Close()
+
+	exists, err := redis.Bool(conn.Do("EXISTS", key))
+	if err != nil {
+		return false
+	}
+
+	return exists
+}
+
+func GetLock(key string) (*redsync.Mutex, error) {
+	mutex := rs.NewMutex(key+"_lock", option...)
+	if err := mutex.Lock(); err != nil {
+		return mutex, err
+	}
+	return mutex, nil
+}
+
+func UnLock(mutex *redsync.Mutex) error {
+	if _, err := mutex.Unlock(); err != nil {
+		return err
+	}
+	return nil
+}
+
 /////////////////////////String类型接口////////////////////////////////////////
 
-func CacheSet(key string, data interface{}, time int) error {
+func CacheSet(key string, data interface{}) error {
 	conn := redisClient.Get()
 	defer conn.Close()
 	value, err := json.Marshal(data)
 	if err != nil {
 		return err
 	}
-	_, err = conn.Do("SET", key, value, "EX", time)
+	_, err = conn.Do("SET", key, value, "EX", valueExpire)
 	if err != nil {
 		return err
 	}
@@ -85,11 +128,11 @@ func CacheGet(key string) ([]byte, error) {
 
 ///////////////////////////List类型接口////////////////////////////////////////
 
-func CacheLPush(key string, value interface{}) error {
+func CacheLPush(key string, value ...interface{}) error {
 	return listPush("LPUSH", key, value)
 }
 
-func CacheRPush(key string, value interface{}) error {
+func CacheRPush(key string, value ...interface{}) error {
 	return listPush("RPUSH", key, value)
 }
 
@@ -112,17 +155,18 @@ func CacheLGetAll(key string) ([][]byte, error) {
 	return data, nil
 }
 
-func listPush(op, key string, data interface{}) error {
+func listPush(op, key string, data ...interface{}) error {
 	conn := redisClient.Get()
 	defer conn.Close()
-
-	value, err := json.Marshal(data)
-	if err != nil {
-		return err
-	}
-	_, err = conn.Do(op, key, value)
-	if err != nil {
-		return err
+	for _, d := range data {
+		value, err := json.Marshal(d)
+		if err != nil {
+			return err
+		}
+		_, err = conn.Do(op, key, value)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }

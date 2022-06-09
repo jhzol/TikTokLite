@@ -16,6 +16,7 @@
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
+set global log_bin_trust_function_creators = 1;
 
 -- ----------------------------
 -- Table structure for comments

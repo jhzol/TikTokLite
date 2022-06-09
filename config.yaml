@@ -1,23 +1,19 @@
 mysql:  
-  host: localhost 
+  host: 192.168.1.12
   port: 3306
   database: TikTokLite
-  username: root
-  password: 991229
+  username: user
+  password: 123
 minio:
   #minio服务主机ip，需要填具体ip
-  host: 192.168.10.138
+  host: 192.168.1.12
   port: 9000
   accessKeyID: minioadmin
   secretAccessKey: minioadmin
   videobuckets: video
   picbuckets: pic
-  #是否部署在wsl上，不是填fasle即可
-  iswsl: false
-  #windows本机ip，视频地址为windows host:port
-  winhost: 192.168.1.12
 redis:
-  address: localhost
+  address: 192.168.1.12
   network: tcp
   port: 6379
   auth: 123

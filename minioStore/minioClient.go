@@ -41,9 +41,6 @@ func InitMinio() {
 	//创建存储桶
 	creatBucket(minioClient, videoBucket)
 	creatBucket(minioClient, picBucket)
-	if viper.GetString("minio.iswsl") == "true" {
-		endpoint = viper.GetString("minio.winhost") + ":" + port
-	}
 	client = Minio{minioClient, endpoint, port, videoBucket, picBucket}
 }
 

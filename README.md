@@ -8,8 +8,6 @@
   - 日志组件
   - 分为`debug` `info` `error` `fatal`四个等级
   - 分为`debug` `debugw` `debugf`三种输出格式，直接调用`log.Debug` `log.Debugw` `log.Debugf`即可
-- logfile
-  - 日志文件，info等级以下在info+time.log文件,以上在error+time.log文件，可在initlog函数中修改路径（或后续写入config中）
 - proto
   - 前端消息结构体，有protobuf文件自动生成
 - repository
