@@ -20,3 +20,4 @@ redis:
 videofile: /tmp/file/video/
 logfile: /tmp/file/log/
 picfile: /tmp/file/picture/
+level: info

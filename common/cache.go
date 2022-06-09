@@ -1,11 +1,11 @@
 package common
 
 import (
+	"TikTokLite/config"
 	"TikTokLite/log"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/spf13/viper"
 	"time"
 
 	"github.com/go-redsync/redsync/v4"
@@ -31,10 +31,11 @@ var (
 )
 
 func RedisInit() {
-	network := viper.GetString("redis.network")
-	address := viper.GetString("redis.address")
-	port := viper.GetString("redis.port")
-	auth := viper.GetString("redis.auth")
+	conf := config.GetConfig()
+	network := conf.Redis.Network
+	address := conf.Redis.Host
+	port := conf.Redis.Port
+	auth := conf.Redis.Auth
 	host := fmt.Sprintf("%s:%s", address, port)
 	redisClient = &redis.Pool{
 		MaxIdle:     10,

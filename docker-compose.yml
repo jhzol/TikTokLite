@@ -24,8 +24,7 @@ services:
     ports:
       - 6379:6379
     volumes:
-      - /data/redis/redis.conf:/etc/redis/redis.conf
-      - /data/redis/data:/data
+      - ./redis.conf:/etc/redis/redis.conf
     command: "redis-server /etc/redis/redis.conf"
   tiktoklite:
     build: 
@@ -37,4 +36,3 @@ services:
       - mysql
       - minio
       - redis
-    

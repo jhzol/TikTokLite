@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"TikTokLite/config"
 	"TikTokLite/log"
 	"TikTokLite/response"
 	"TikTokLite/service"
@@ -10,7 +11,6 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/spf13/viper"
 )
 
 //视频发布
@@ -25,7 +25,7 @@ func PublishAction(ctx *gin.Context) {
 	filename := filepath.Base(data.Filename)
 
 	finalName := fmt.Sprintf("%s_%s", util.RandomString(), filename)
-	videoPath := viper.GetString("videofile")
+	videoPath := config.GetConfig().Path.Videofile
 	saveFile := filepath.Join(videoPath, finalName)
 
 	log.Info("saveFile:", saveFile)

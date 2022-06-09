@@ -1,6 +1,7 @@
 package service
 
 import (
+	"TikTokLite/config"
 	"TikTokLite/log"
 	"TikTokLite/minioStore"
 	message "TikTokLite/proto/pkg"
@@ -9,8 +10,6 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
-
-	"github.com/spf13/viper"
 )
 
 func PublishVideo(userId int64, saveFile string) (*message.DouyinPublishActionResponse, error) {
@@ -56,7 +55,7 @@ func GetImageFile(videoPath string) (string, error) {
 	videoName := temp[len(temp)-1]
 	b := []byte(videoName)
 	videoName = string(b[:len(b)-3]) + "jpg"
-	picpath := viper.GetString("picfile")
+	picpath := config.GetConfig().Path.Picfile
 	picName := filepath.Join(picpath, videoName)
 	cmd := exec.Command("ffmpeg", "-i", videoPath, "-ss", "1", "-f", "image2", "-t", "0.01", "-y", picName)
 	err := cmd.Run()

@@ -2,6 +2,7 @@ package util
 
 import (
 	"math/rand"
+	"os"
 	"time"
 )
 
@@ -37,4 +38,26 @@ func RandomString() string {
 		result[i] = letters[rand.Intn(len(letters))]
 	}
 	return string(result)
+}
+
+func PathExists(path string) (bool, error) {
+	_, err := os.Stat(path)
+	if err == nil {
+		return true, nil
+	}
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+	return false, err
+}
+
+func Mkdir(path string) error {
+	if ok, _ := PathExists(path); ok {
+		return nil
+	}
+	err := os.MkdirAll(path, os.ModePerm)
+	if err != nil {
+		return err
+	}
+	return nil
 }
