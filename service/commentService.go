@@ -2,7 +2,7 @@ package service
 
 import (
 	"TikTokLite/log"
-	"TikTokLite/proto/pkg"
+	message "TikTokLite/proto/pkg"
 	"TikTokLite/repository"
 )
 
@@ -37,7 +37,7 @@ func CommentAction(commentId, videoId, userId int64, comment_text, actionType st
 
 		return commentResponse, nil
 	} else {
-		err := repository.CommentDelete(commentId)
+		err := repository.CommentDelete(videoId, commentId)
 		if err != nil {
 			return nil, err
 		}

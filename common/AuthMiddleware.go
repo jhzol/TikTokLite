@@ -73,9 +73,12 @@ func VerifyToken(tokenString string) (int64, error) {
 func AuthMiddleware() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
+		tokenString := c.PostForm("token")
+		if tokenString == "" {
+			tokenString = c.Query("token")
+		}
 
-		tokenString := c.Query("token")
-
+		//tokenString := c.Query("token")
 		userId, err := VerifyToken(tokenString)
 		if err != nil || userId == int64(0) {
 			response.Fail(c, "auth error", nil)

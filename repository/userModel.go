@@ -64,7 +64,7 @@ func InsertUser(userName, password string) (*User, error) {
 		return nil, result.Error
 	}
 	log.Infof("regist user:%+v", user)
-	CacheSetUser(user)
+	//CacheSetUser(user)
 	return &user, nil
 }
 
@@ -75,12 +75,12 @@ func GetUserInfo(u interface{}) (*User, error) {
 	var err error
 	switch u := u.(type) {
 	case int64:
-		user, err = CacheGetUser(u)
+		/* user, err = CacheGetUser(u)
 		if err == nil {
 			return &user, nil
-		}
+		} */
 		err = db.Where("user_id = ?", u).Find(&user).Error
-		CacheSetUser(user)
+		//CacheSetUser(user)
 	case string:
 		err = db.Where("user_name = ?", u).Find(&user).Error
 	default:

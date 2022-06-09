@@ -20,7 +20,7 @@ redis:
   address: localhost
   network: tcp
   port: 6379
-  auth: 123
+
 videofile: ../file/video/
 logfile: ../file/log/
 picfile: ../file/picture/
