@@ -2,19 +2,9 @@ package service
 
 import (
 	"TikTokLite/log"
-	"TikTokLite/proto/pkg"
+	message "TikTokLite/proto/pkg"
 	"TikTokLite/repository"
 )
-
-// type User struct {
-// 	// gorm.Model
-// 	Id       int64  `gorm:"column:user_id; primary_key;"`
-// 	Name     string `gorm:"column:user_name"`
-// 	Password string `gorm:"column:password"`
-// 	Follow   int64  `gorm:"column:follow_count"`
-// 	Follower int64  `gorm:"column:follower_count"`
-// 	Token    string `gorm:"column:token"`
-// }
 
 func CommentAction(commentId, videoId, userId int64, comment_text, actionType string) (*message.DouyinCommentActionResponse, error) {
 
@@ -37,7 +27,7 @@ func CommentAction(commentId, videoId, userId int64, comment_text, actionType st
 
 		return commentResponse, nil
 	} else {
-		err := repository.CommentDelete(commentId)
+		err := repository.CommentDelete(videoId, commentId)
 		if err != nil {
 			return nil, err
 		}

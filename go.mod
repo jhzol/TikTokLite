@@ -3,9 +3,10 @@ module TikTokLite
 go 1.18
 
 require (
-	github.com/garyburd/redigo v1.6.3
 	github.com/gin-gonic/gin v1.7.7
+	github.com/go-redsync/redsync/v4 v4.5.0
 	github.com/gogo/protobuf v1.3.2
+	github.com/gomodule/redigo v1.8.8
 	go.uber.org/zap v1.21.0
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 )
@@ -18,6 +19,8 @@ require (
 	github.com/go-playground/validator/v10 v10.4.1 // indirect
 	github.com/go-sql-driver/mysql v1.6.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
+	github.com/hashicorp/errwrap v1.0.0 // indirect
+	github.com/hashicorp/go-multierror v1.1.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.4 // indirect

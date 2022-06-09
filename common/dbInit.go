@@ -2,23 +2,24 @@
 package common
 
 import (
+	"TikTokLite/config"
 	"TikTokLite/log"
 	"fmt"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"github.com/spf13/viper"
 )
 
 var DataBase *gorm.DB
 
 func InitDatabase() {
 	var err error
-	host := viper.GetString("mysql.host")
-	port := viper.GetString("mysql.port")
-	database := viper.GetString("mysql.database")
-	username := viper.GetString("mysql.username")
-	password := viper.GetString("mysql.password")
+	conf := config.GetConfig()
+	host := conf.Mysql.Host
+	port := conf.Mysql.Port
+	database := conf.Mysql.Database
+	username := conf.Mysql.Username
+	password := conf.Mysql.Password
 	args := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=true",
 		username,
 		password,

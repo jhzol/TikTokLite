@@ -14,7 +14,7 @@ import (
 func Feed(ctx *gin.Context) {
 	var userId int64
 	currentTime, err := strconv.ParseInt(ctx.Query("latest_time"), 10, 64)
-	if err != nil {
+	if err != nil || currentTime == int64(0) {
 		currentTime = util.GetCurrentTime()
 	}
 	//token := ctx.Query("token")

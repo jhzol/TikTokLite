@@ -64,38 +64,39 @@ func InsertUser(userName, password string) (*User, error) {
 		return nil, result.Error
 	}
 	log.Infof("regist user:%+v", user)
-	//CacheSetUser(user)
+	go CacheSetUser(user)
 	return &user, nil
 }
 
 //获取用户信息
-func GetUserInfo(u interface{}) (*User, error) {
+func GetUserInfo(u interface{}) (User, error) {
 	db := common.GetDB()
 	user := User{}
 	var err error
 	switch u := u.(type) {
 	case int64:
-		// user, err = CacheGetUser(u)
-		// if err == nil {
-		// 	return &user, nil
-		// }
+		user, err = CacheGetUser(u)
+		if err == nil {
+			return user, nil
+		}
 		err = db.Where("user_id = ?", u).Find(&user).Error
-		// CacheSetUser(user)
+
 	case string:
 		err = db.Where("user_name = ?", u).Find(&user).Error
 	default:
 		err = errors.New("")
 	}
 	if err != nil {
-		return nil, errors.New("user error")
+		return user, errors.New("user error")
 	}
+	go CacheSetUser(user)
 	log.Infof("%+v", user)
-	return &user, nil
+	return user, nil
 }
 
 func CacheSetUser(u User) {
 	uid := strconv.FormatInt(u.Id, 10)
-	err := common.CacheHSet("user", uid, u)
+	err := common.CacheSet("user_"+uid, u)
 	if err != nil {
 		log.Errorf("set cache error:%+v", err)
 	}
@@ -103,7 +104,7 @@ func CacheSetUser(u User) {
 
 func CacheGetUser(uid int64) (User, error) {
 	key := strconv.FormatInt(uid, 10)
-	data, err := common.CacheHGet("user", key)
+	data, err := common.CacheGet("user_" + key)
 	user := User{}
 	if err != nil {
 		return user, err

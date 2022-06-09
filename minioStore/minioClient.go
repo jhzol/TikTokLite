@@ -1,10 +1,10 @@
 package minioStore
 
 import (
+	"TikTokLite/config"
 	"TikTokLite/log"
 	"TikTokLite/util"
 	"github.com/minio/minio-go/v6"
-	"github.com/spf13/viper"
 	"strconv"
 	"strings"
 )
@@ -24,13 +24,14 @@ func GetMinio() Minio {
 }
 
 func InitMinio() {
-	endpoint := viper.GetString("minio.host")
-	port := viper.GetString("minio.port")
+	conf := config.GetConfig()
+	endpoint := conf.Minio.Host
+	port := conf.Minio.Port
 	endpoint = endpoint + ":" + port
-	accessKeyID := viper.GetString("minio.accessKeyID")
-	secretAccessKey := viper.GetString("minio.secretAccessKey")
-	videoBucket := viper.GetString("minio.videobuckets")
-	picBucket := viper.GetString("minio.picbuckets")
+	accessKeyID := conf.Minio.AccessKeyID
+	secretAccessKey := conf.Minio.SecretAccessKey
+	videoBucket := conf.Minio.Videobuckets
+	picBucket := conf.Minio.Picbuckets
 	useSSL := false
 
 	// 初使化 minio client对象。
@@ -41,9 +42,6 @@ func InitMinio() {
 	//创建存储桶
 	creatBucket(minioClient, videoBucket)
 	creatBucket(minioClient, picBucket)
-	if viper.GetString("minio.iswsl") == "true" {
-		endpoint = viper.GetString("minio.winhost") + ":" + port
-	}
 	client = Minio{minioClient, endpoint, port, videoBucket, picBucket}
 }
 

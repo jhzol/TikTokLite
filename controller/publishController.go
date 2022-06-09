@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"TikTokLite/config"
 	"TikTokLite/log"
 	"TikTokLite/response"
 	"TikTokLite/service"
@@ -10,13 +11,15 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/spf13/viper"
 )
 
 //视频发布
 func PublishAction(ctx *gin.Context) {
 	// publishResponse := &message.DouyinPublishActionResponse{}
 	userId, _ := ctx.Get("UserId")
+	//token := ctx.PostForm("token")
+	//userId, err := common.VerifyToken(token)
+	title := ctx.PostForm("title")
 	data, err := ctx.FormFile("data")
 	if err != nil {
 		response.Fail(ctx, err.Error(), nil)
@@ -25,7 +28,7 @@ func PublishAction(ctx *gin.Context) {
 	filename := filepath.Base(data.Filename)
 
 	finalName := fmt.Sprintf("%s_%s", util.RandomString(), filename)
-	videoPath := viper.GetString("videofile")
+	videoPath := config.GetConfig().Path.Videofile
 	saveFile := filepath.Join(videoPath, finalName)
 
 	log.Info("saveFile:", saveFile)
@@ -34,7 +37,8 @@ func PublishAction(ctx *gin.Context) {
 		response.Fail(ctx, err.Error(), nil)
 		return
 	}
-	publish, err := service.PublishVideo(userId.(int64), saveFile)
+	publish, err := service.PublishVideo(userId.(int64), saveFile, title)
+	//publish, err := service.PublishVideo(userId, saveFile)
 	if err != nil {
 		response.Fail(ctx, err.Error(), nil)
 		return

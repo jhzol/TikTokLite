@@ -60,7 +60,7 @@ func UserInfo(userID int64) (*message.DouyinUserResponse, error) {
 	return &message.DouyinUserResponse{User: user}, nil
 }
 
-func messageUserInfo(info *repository.User) *message.User {
+func messageUserInfo(info repository.User) *message.User {
 	return &message.User{
 		Id:              info.Id,
 		Name:            info.Name,

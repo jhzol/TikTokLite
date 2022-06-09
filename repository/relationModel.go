@@ -2,9 +2,16 @@ package repository
 
 import (
 	"TikTokLite/common"
+	"TikTokLite/log"
 	"errors"
+	"strconv"
 
 	"github.com/jinzhu/gorm"
+)
+
+const (
+	add = int64(1)
+	sub = int64(-1)
 )
 
 type Relation struct {
@@ -32,6 +39,8 @@ func FollowAction(userId, toUserId int64) error {
 	if err != nil {
 		return err
 	}
+	go CacheChangeUserCount(userId, add, "follow")
+	go CacheChangeUserCount(toUserId, add, "follower")
 	return nil
 }
 
@@ -41,22 +50,56 @@ func UnFollowAction(userId, toUserId int64) error {
 	if err != nil {
 		return err
 	}
+	log.Debug("unfollow update user cache")
+	go CacheChangeUserCount(userId, sub, "follow")
+	go CacheChangeUserCount(toUserId, sub, "follower")
 	return nil
 }
 
 func GetFollowList(userId int64, usertype string) ([]User, error) {
 	db := common.GetDB()
-	list := []User{}
-	joinArg := "follower"
-	if usertype == "follower" {
-		joinArg = "follow"
-	}
-	err := db.Joins("left join relations on users.user_id = relations."+joinArg+"_id").
-		Where("relations."+usertype+"_id = ?", userId).Find(&list).Error
+	re := []Relation{}
+	// joinArg := "follower"
+	// if usertype == "follower" {
+	// 	joinArg = "follow"
+	// }
+	// err := db.Joins("left join relations on users.user_id = relations."+joinArg+"_id").
+	// 	Where("relations."+usertype+"_id = ?", userId).Find(&list).Error
+	err := db.Where("relations."+usertype+"_id = ?", userId).Find(&re).Error
 	if err == gorm.ErrRecordNotFound {
 		return []User{}, nil
 	} else if err != nil {
 		return nil, err
 	}
+	list := make([]User, len(re))
+	for i, r := range re {
+		uid := r.Follow
+		if usertype == "follow" {
+			uid = r.Follower
+		}
+		list[i], _ = GetUserInfo(uid)
+	}
 	return list, nil
+}
+
+func CacheChangeUserCount(userid, op int64, ftype string) {
+	uid := strconv.FormatInt(userid, 10)
+	mutex, _ := common.GetLock("user_" + uid)
+	user, err := CacheGetUser(userid)
+	if err != nil {
+		log.Infof("user:%v miss cache", userid)
+		return
+	}
+	switch ftype {
+	case "follow":
+		user.Follow += op
+	case "follower":
+		user.Follower += op
+	case "like":
+		user.FavCount += op
+	case "liked":
+		user.TotalFav += op
+	}
+	CacheSetUser(user)
+	common.UnLock(mutex)
 }

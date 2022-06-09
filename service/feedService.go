@@ -46,7 +46,8 @@ func VideoList(videoList []repository.Video, userId int64) []*message.Video {
 			FavoriteCount: video.FavoriteCount,
 			CommentCount:  video.CommentCount,
 			IsFavorite:    false,
-			Author:        messageUserInfo(&video.Author),
+			Author:        messageUserInfo(video.Author),
+			Title:         video.Title,
 		}
 		if _, ok := FollowList[video.AuthorId]; ok {
 			v.Author.IsFollow = true

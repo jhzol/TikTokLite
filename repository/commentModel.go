@@ -3,6 +3,8 @@ package repository
 import (
 	"TikTokLite/common"
 	"TikTokLite/log"
+	"encoding/json"
+	"strconv"
 	"time"
 )
 
@@ -30,10 +32,13 @@ func CommentAdd(userId, videoId int64, comment_text string) (*Comment, error) {
 		return nil, result.Error
 	}
 	log.Infof("comment:%+v", comment)
+
+	CacheDelCommentAll(videoId)
+
 	return &comment, nil
 }
 
-func CommentDelete(comment_id int64) error {
+func CommentDelete(videoId, comment_id int64) error {
 	db := common.GetDB()
 	commentTemp := Comment{}
 
@@ -41,6 +46,9 @@ func CommentDelete(comment_id int64) error {
 	if err != nil {
 		return err
 	}
+
+	CacheDelCommentAll(videoId)
+
 	db.Delete(&commentTemp)
 	return nil
 
@@ -49,14 +57,28 @@ func CommentDelete(comment_id int64) error {
 func CommentList(videoId int64) ([]Comment, error) {
 	var comments []Comment
 	db := common.GetDB()
-
+	var err error
 	/* c := common.GetRE()
 	values, _ := redis.Values(c.Do("lrange", videoId, "0", "-1"))
 	for _,v := range values{
 
 	} */
 
-	err := db.Where("video_id = ?", videoId).Order("comment_id DESC").Find(&comments).Error
+	comments, _ = CacheGetComment(videoId)
+	log.Infof("comments-------------------------:%+v\n", comments)
+
+	/* if err == nil {
+		return comments, nil
+	} */
+	if comments != nil {
+		return comments, nil
+	}
+
+	err = db.Where("video_id = ?", videoId).Order("comment_id DESC").Find(&comments).Error
+
+	CacheSetComment(videoId, comments)
+	log.Infof("comments:%+v", comments)
+
 	if err != nil {
 		return nil, err
 	}
@@ -85,3 +107,61 @@ func CommentList(videoId int64) ([]Comment, error) {
 // 	return &user, nil
 
 // }
+
+/* func CacheSetComment(c Comment) {
+	vid := strconv.FormatInt(c.VideoId, 10)
+	err := common.CacheHSet("comment", vid, c)
+	if err != nil {
+		log.Errorf("set cache error:%+v", err)
+	}
+} */
+
+func CacheSetComment(videoId int64, c []Comment) {
+	//for _, c1 := range c {
+	//video_id := c1.VideoId
+
+	vid := strconv.FormatInt(videoId, 10)
+	err := common.CacheHSet("comment", vid, c)
+	if err != nil {
+		log.Errorf("set cache error:%+v", err)
+	}
+}
+
+//}
+
+func CacheGetComment(vid int64) ([]Comment, error) {
+	key := strconv.FormatInt(vid, 10)
+	data, err := common.CacheHGet("comment", key)
+
+	//var comments = make([]map[string]interface{},2)
+
+	var comments []Comment
+	//comment := Comment{}
+	if err != nil {
+		return comments, err
+	}
+	err = json.Unmarshal(data, &comments)
+	if err != nil {
+		return comments, err
+	}
+	return comments, nil
+}
+
+func CacheDelCommentAll(videoId int64) {
+
+	vid := strconv.FormatInt(videoId, 10)
+	err := common.CacheDelHash("comment", vid)
+	if err != nil {
+		log.Errorf("set cache error:%+v", err)
+	}
+}
+
+/* func CacheDelCommentOne(videoId, comment_id int64) {
+
+	vid := strconv.FormatInt(videoId, 10)
+	cid := strconv.FormatInt(comment_id, 10)
+	err := common.CacheDelHash2("comment", vid, cid)
+	if err != nil {
+		log.Errorf("set cache error:%+v", err)
+	}
+} */

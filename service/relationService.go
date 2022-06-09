@@ -7,7 +7,7 @@ import (
 	"errors"
 )
 
-func RelationAction(toUserId, tokenUserId int64 , action string) error {
+func RelationAction(toUserId, tokenUserId int64, action string) error {
 	if tokenUserId == toUserId {
 		return errors.New("you can't follow yourself")
 	}
@@ -41,7 +41,7 @@ func RelationFollowList(userId int64, tokenUserId int64) (*message.DouyinRelatio
 		UserList: make([]*message.User, len(followList)),
 	}
 	for i, u := range followList {
-		follow := messageUserInfo(&u)
+		follow := messageUserInfo(u)
 		if _, ok := list[follow.Id]; ok {
 			follow.IsFollow = true
 		}
@@ -65,7 +65,7 @@ func RelationFollowerList(userId int64, tokenUserId int64) (*message.DouyinRelat
 		UserList: make([]*message.User, len(followList)),
 	}
 	for i, u := range followList {
-		follow := messageUserInfo(&u)
+		follow := messageUserInfo(u)
 		if _, ok := list[follow.Id]; ok {
 			follow.IsFollow = true
 		}
