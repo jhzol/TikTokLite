@@ -32,7 +32,10 @@ services:
       dockerfile : ./Dockerfile
     ports:
      - "8080:8080"
+    volumes:
+      - ./wait-for.sh:/apps/wait-for.sh
     depends_on:
       - mysql
       - minio
       - redis
+    command: ["./wait-for.sh", "mysql:3306","--", "/apps/TiktokLite" ]
