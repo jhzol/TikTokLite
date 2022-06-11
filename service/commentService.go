@@ -45,7 +45,7 @@ func CommentList(videoId int64) (*message.DouyinCommentListResponse, error) {
 	if err != nil {
 		return nil, err
 	}
-	log.Infof("comments:%v\n", comments)
+	log.Debugf("comments:%v\n", comments)
 
 	list := &message.DouyinCommentListResponse{
 		CommentList: make([]*message.Comment, len(comments)),
