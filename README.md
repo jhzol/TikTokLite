@@ -38,6 +38,10 @@ docker-compose up
 - `redis.conf`：redis配置文件
 - `main.go`：服务入口
 
+### 整体架构
+
+![结构图](https://github.com/jhzol/test/blob/master/image/Tiktoklite.png?raw=true)
+
 ### 实现功能
 
 |    功能    |                             说明                             |
@@ -65,7 +69,7 @@ docker-compose up
 
   用户评论列表、评论信息缓存、密码加密、jwt鉴权
 
-- 刘航
+- 刘航、薛寅珊
 
   视频点赞、点赞列表
 
