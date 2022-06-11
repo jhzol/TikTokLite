@@ -85,6 +85,7 @@ func GetFollowList(userId int64, usertype string) ([]User, error) {
 func CacheChangeUserCount(userid, op int64, ftype string) {
 	uid := strconv.FormatInt(userid, 10)
 	mutex, _ := common.GetLock("user_" + uid)
+	defer common.UnLock(mutex)
 	user, err := CacheGetUser(userid)
 	if err != nil {
 		log.Infof("user:%v miss cache", userid)
@@ -101,5 +102,4 @@ func CacheChangeUserCount(userid, op int64, ftype string) {
 		user.TotalFav += op
 	}
 	CacheSetUser(user)
-	common.UnLock(mutex)
 }

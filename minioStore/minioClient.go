@@ -94,7 +94,7 @@ func (m *Minio) UploadFile(filetype, file, userID string) (string, error) {
 		log.Errorf("upload file error:%s", err.Error())
 		return "", err
 	}
-	log.Info("upload file %dbyte success,fileName:%s", n, fileName)
+	log.Infof("upload file %dbyte success,fileName:%s", n, fileName)
 	url := "http://" + m.endpoint + "/" + bucket + "/" + fileName.String()
 	return url, nil
 }
